@@ -1,0 +1,78 @@
+import LineCollection from '../PolygonEditorRanging/lineCollection';
+import { IDistanceText } from '../PolygonEditorRanging/type';
+import { createText, computePoint2PointDistance } from '../utils/index';
+
+export default class PolygonRanging {
+    private map: AMap.Map;
+    // 线集合
+    private lines: LineCollection | null = null;
+    // 多边形
+    private polygon: AMap.Polygon | null = null;
+    // 线长的文本呢
+    private lineLengthText: AMap.Text | null = null;
+
+    // 兜底设置编辑中间点标记列表路径
+    editingMidTipMarkerListPath: string | ((polygonEditor: AMap.PolygonEditor) => AMap.PolygonEditor) | null = null;
+
+    constructor(map: AMap.Map) {
+        if (!map) {
+            throw new Error('map not found!');
+        }
+        this.map = map;
+        this.lines = new LineCollection(this.map);
+    }
+
+    /**
+     * 开始边线测距
+     * @param polygon 
+     * @returns 
+     */
+    public start(polygon: AMap.Polygon) {
+        if (!polygon) {
+            throw new Error('polygon not found');
+        }
+        if (this.polygon) return;
+
+        this.polygon = polygon;
+        this.lines!.createLinesByPaths(this.polygon.getPath() as Common.IPath);
+        // 鼠标移动，判断是否命中了计算 PolygonEditor 的计算处理
+        this.map.on('mousemove', this.onPolygonRanging);
+    }
+
+    public stop() {
+        // 鼠标移动，判断是否命中了计算 PolygonEditor 的计算处理
+        this.map.off('mousemove', this.onPolygonRanging);
+    }
+
+    private onPolygonRanging = (event: Common.Event) => {
+        const pos = event.lnglat;
+        const line = this.lines!.getPointInPolyline(pos);
+        if (!line) {
+            return this.removeLineDistanceText();
+        }
+
+        const [startPoint, endPoint] = line;
+        if (!this.lineLengthText) {
+            this.lineLengthText = createText();
+            this.lineLengthText.add(this.map);
+        }
+        this.updateDistanceText(this.lineLengthText, computePoint2PointDistance(startPoint, endPoint));
+    };
+
+    private updateDistanceText(textIns: AMap.Text, { text, textPos }: IDistanceText) {
+        textIns.setText(text);
+        textIns.setPosition(textPos);
+    }
+
+    private removeLineDistanceText() {
+        this.lineLengthText?.remove();
+        this.lineLengthText = null;
+    }
+
+    public destroy() {
+        this.polygon = null;
+        this.stop();
+        this.removeLineDistanceText();
+        return this;
+    }
+}
