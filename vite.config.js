@@ -6,6 +6,9 @@ export default defineConfig({
     plugins: [
         vue()
     ],
+    server: {
+        open: true
+    },
     build: {
         lib: {
             entry: './src/main.ts',

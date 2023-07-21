@@ -1,8 +1,18 @@
 {
   "name": "gd-tools",
-  "private": true,
   "version": "0.0.1",
   "type": "module",
+  "author": "fengjian",
+  "description": "高德工具 多边型编辑器测距工具等",
+  "keywords": [
+    "高德工具",
+    "gaode",
+    "多边形测距",
+    "polygon",
+    "polygonEditor",
+    "ranging",
+    "多边形编辑器测距"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -20,5 +30,14 @@
     "install": "^0.13.0",
     "lodash-es": "^4.17.21",
     "vue": "^3.3.4"
-  }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "homepage": "https://github.com/MeetTheBest/gd-tool",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MeetTheBest/gd-tools"
+  },
+  "license": "MIT"
 }
