@@ -1,10 +1,15 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue'
-// import vueJsx from '@vitejs/plugin-vue-jsx'
 
 export default defineConfig({
+    base: './',
     plugins: [
-        vue(),
-        // vueJsx()
+        vue()
     ],
+    build: {
+        lib: {
+            entry: './src/main.ts',
+            name: 'gd-tools'
+        }
+    }
 });
