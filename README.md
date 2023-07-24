@@ -20,7 +20,7 @@ npm run dev
 **使用**
 
 ```javascript
-import { PolygonRanging } from 'gd-tools';
+import { PolygonRanging } from 'gaode-tools';
 
 const map = new AMap.Map('container');
 const polygonRangingIns = new PolygonRanging(map);
@@ -39,7 +39,7 @@ polygonRangingIns.destroy();
 **使用**
 
 ```javascript
-import { PolygonRangingInDrawing } from 'gd-tools';
+import { PolygonRangingInDrawing } from 'gaode-tools';
 
 const map = new AMap.Map('container');
 const polygonRangingIns = new PolygonRangingInDrawing(map);
@@ -66,7 +66,7 @@ polygonRangingIns.destroy();
 **使用**
 
 ```javascript
-import { PolygonEditorRanging } from 'gd-tools';
+import { PolygonEditorRanging } from 'gaode-tools';
 
 const map = new AMap.Map('container');
 

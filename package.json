@@ -1,5 +1,5 @@
 {
-  "name": "gd-tools",
+  "name": "gaode-tools",
   "version": "0.0.1",
   "type": "module",
   "author": "fengjian",
@@ -34,10 +34,10 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "homepage": "https://github.com/MeetTheBest/gd-tool",
+  "homepage": "https://github.com/MeetTheBest/gaode-tool",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MeetTheBest/gd-tools"
+    "url": "https://github.com/MeetTheBest/gaode-tools"
   },
   "license": "MIT"
 }
