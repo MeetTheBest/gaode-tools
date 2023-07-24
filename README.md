@@ -17,7 +17,7 @@ npm run dev
 
 ## 多边形测距 PolygonRanging
 
-**使用**
+**示例**
 
 ```javascript
 import { PolygonRanging } from 'gaode-tools';
@@ -34,9 +34,11 @@ polygonRangingIns.start(polygon);
 polygonRangingIns.destroy();
 ```
 
+![多边形测距](./image/polygon_ranging.gif)
+
 ## 多边形绘制时测距 PolygonRangingInDrawing
 
-**使用**
+**示例**
 
 ```javascript
 import { PolygonRangingInDrawing } from 'gaode-tools';
@@ -61,9 +63,11 @@ polygonRangingIns.start();
 polygonRangingIns.destroy();
 ```
 
+![多边形绘制时测距](./image/polygon_ranging_in_drawing.gif)
+
 ## 多边形编辑器测距 PolygonEditorRanging
 
-**使用**
+**示例**
 
 ```javascript
 import { PolygonEditorRanging } from 'gaode-tools';
@@ -85,3 +89,5 @@ polygonEditorRangingIns.stop();
 // 适当时机销毁测距（如组件的 destroy 生命周期）
 polygonEditorRangingIns.destroy();
 ```
+
+![多边形编辑器测距](./image/polygon_editor_ranging.gif)
