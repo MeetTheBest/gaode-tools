@@ -13,6 +13,14 @@
     "ranging",
     "多边形编辑器测距"
   ],
+  "main": "./dist/gaode-tools.umd.js",
+  "module": "./dist/gaode-tools.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/gaode-tools.es.js",
+      "require": "./dist/gaode-tools.umd.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -27,7 +35,6 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
-    "gaode-tools": "^0.0.1",
     "install": "^0.13.0",
     "lodash-es": "^4.17.21",
     "vue": "^3.3.4"
