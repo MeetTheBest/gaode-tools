@@ -1,9 +1,29 @@
 # 高德未支持工具封装
 
+## 安装
+
+```shell
+npm install gaode-tools
+```
+
+## 使用
+
+```js
+import gaodeTools from 'gaode-tools';
+
+const polygonRangingIns = new gaodeTools.PolygonRanging(map);
+
+// 或者
+import { PolygonRanging } from 'gaode-tools';
+
+const polygonRangingIns = new PolygonRanging(map);
+```
+
 ## 本地运行
 
-```
+```shell
 npm install
+
 npm run dev
 ```
 
@@ -11,9 +31,9 @@ npm run dev
 
 | name | 使用 | 描述 |
 | ----- | ----- | ---- |
-| `start` | `instance.start(arg?)` | 开始相应功能 |
-| `stop` | `instance.stop()` | 停止相应功能 |
-| `destroy` | `instance.destroy()` | 销毁相应功能 |
+| `start` | `instance.start(arg?)` | 启用相应能力 |
+| `stop` | `instance.stop()` | 停止相应能力 |
+| `destroy` | `instance.destroy()` | 销毁相应能力 |
 
 ## 多边形测距 PolygonRanging
 
