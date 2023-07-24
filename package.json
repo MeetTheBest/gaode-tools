@@ -27,6 +27,7 @@
     "vite": "^4.4.5"
   },
   "dependencies": {
+    "gaode-tools": "^0.0.1",
     "install": "^0.13.0",
     "lodash-es": "^4.17.21",
     "vue": "^3.3.4"
@@ -34,7 +35,7 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },
-  "homepage": "https://github.com/MeetTheBest/gaode-tool",
+  "homepage": "https://github.com/MeetTheBest/gaode-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/MeetTheBest/gaode-tools"
