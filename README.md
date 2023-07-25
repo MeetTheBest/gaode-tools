@@ -114,7 +114,7 @@ polygonEditorRangingIns.destroy();
 
 ![多边形编辑器测距](./image/polygon_editor_ranging.gif)
 
-### 多边形编辑器点事件
+### 多边形编辑器操作点事件
 
 **示例**
 
@@ -130,29 +130,29 @@ editor.open();
 
 const polygonEditorEventIns = new PolygonEditorEvent(editor);
 
-polygonEditorEventIns.on('mousedown', (point) => {
-    console.log('当前鼠标按下点位', point);
+polygonEditorEventIns.on('mousedown', (target) => {
+    console.log('当前鼠标按下点位', target);
 });
 
-polygonEditorEventIns.on('mousemove', (point) => {
-    console.log('当前移动点位', point);
+polygonEditorEventIns.on('mousemove', (target) => {
+    console.log('当前移动点位', target);
 });
 
-polygonEditorEventIns.on('mouseup', (point) => {
-    console.log('当前鼠标松开点位', point);
+polygonEditorEventIns.on('mouseup', (target) => {
+    console.log('当前鼠标松开点位', target);
 });
 
 // 适当时机销毁测距（如组件的 destroy 生命周期）
 polygonEditorEventIns.clearAll();
 ```
 
+![多边形编辑器事件](./image/polygon_edtior_event.gif)
+
 **API**
 
 |  参数 | 说明 | 类型 |
 | ----- | ----- | ---- |
-| on | 监听指定事件 | `on(eventName: mousedown \| mousemove \| mouseup, callback: TEventCallback: (point: AMap.CircleMarker) => void)` |
-| off | 移除指定事件 | `off(eventName: mousedown \| mousemove \| mouseup, callback: TEventCallback: (point: AMap.CircleMarker) => void)` |
-| once | 监听指定事件行为，触发一次后自动移除 | `once(eventName: mousedown \| mousemove \| mouseup, callback: TEventCallback: (point: AMap.CircleMarker) => void)` |
+| on | 监听指定事件 | `on(eventName: mousedown \| mousemove \| mouseup, callback: (target: AMap.CircleMarker) => void)` |
+| off | 移除指定事件 | `off(eventName: mousedown \| mousemove \| mouseup, callback: (target: AMap.CircleMarker) => void)` |
+| once | 监听指定事件行为，触发一次后自动移除 | `once(eventName: mousedown \| mousemove \| mouseup, callback: (target: AMap.CircleMarker) => void)` |
 | clearAll | 移除指定事件监听，`eventName` 不传则移除全部 | `clearAll(eventName?: mousedown \| mousemove \| mouseup)` |
-
-![多边形编辑器事件](./image/polygon_edtior_event.gif)
