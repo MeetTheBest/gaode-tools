@@ -66,6 +66,9 @@ const registryPolygonEditorEvent = () => {
 	polygonEditorEventIns?.on('mouseup', (circleMarker) => {
 		console.log('松开', circleMarker);
 	});
+	polygonEditorEventIns?.on('mousemove', (circleMarker) => {
+		console.log('移动', circleMarker);
+	});
 };
 
 onMounted(() => {
