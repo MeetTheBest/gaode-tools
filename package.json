@@ -1,6 +1,6 @@
 {
   "name": "gaode-tools",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "type": "module",
   "author": "fengjian",
   "description": "高德工具 多边型编辑器测距工具等",
