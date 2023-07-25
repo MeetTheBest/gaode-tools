@@ -29,13 +29,15 @@ npm run dev
 
 ## 通用 API
 
-| name | 使用 | 描述 |
+| 参数 | 说明 | 类型 |
 | ----- | ----- | ---- |
-| `start` | `instance.start(arg?)` | 启用相应能力 |
-| `stop` | `instance.stop()` | 停止相应能力 |
-| `destroy` | `instance.destroy()` | 销毁相应能力 |
+| `start` | 启用相应能力 | `instance.start(arg?)` |
+| `stop` | 停止相应能力 | `instance.stop()` |
+| `destroy` | 销毁相应能力 | `instance.destroy()` |
 
-## 多边形测距 PolygonRanging
+## 多边形类工具
+
+### 多边形测距 PolygonRanging
 
 **示例**
 
@@ -56,7 +58,7 @@ polygonRangingIns.destroy();
 
 ![多边形测距](./image/polygon_ranging.gif)
 
-## 多边形绘制时测距 PolygonRangingInDrawing
+### 多边形绘制时测距 PolygonRangingInDrawing
 
 **示例**
 
@@ -85,7 +87,7 @@ polygonRangingIns.destroy();
 
 ![多边形绘制时测距](./image/polygon_ranging_in_drawing.gif)
 
-## 多边形编辑器测距 PolygonEditorRanging
+### 多边形编辑器测距 PolygonEditorRanging
 
 **示例**
 
@@ -111,3 +113,46 @@ polygonEditorRangingIns.destroy();
 ```
 
 ![多边形编辑器测距](./image/polygon_editor_ranging.gif)
+
+### 多边形编辑器点事件
+
+**示例**
+
+```javascript
+import { PolygonEditorEvent } from 'gaode-tools';
+
+const map = new AMap.Map('container');
+
+const polygon = new AMap.Polygon({});
+
+const editor = new AMap.PolygonEditor(map, polygon);
+editor.open();
+
+const polygonEditorEventIns = new PolygonEditorEvent(editor);
+
+polygonEditorEventIns.on('mousedown', (point) => {
+    console.log('当前鼠标按下点位', point);
+});
+
+polygonEditorEventIns.on('mousemove', (point) => {
+    console.log('当前移动点位', point);
+});
+
+polygonEditorEventIns.on('mouseup', (point) => {
+    console.log('当前鼠标松开点位', point);
+});
+
+// 适当时机销毁测距（如组件的 destroy 生命周期）
+polygonEditorEventIns.clearAll();
+```
+
+**API**
+
+|  参数 | 说明 | 类型 |
+| ----- | ----- | ---- |
+| on | 监听指定事件 | `on(eventName: mousedown \| mousemove \| mouseup, callback: TEventCallback: (point: AMap.CircleMarker) => void)` |
+| off | 移除指定事件 | `off(eventName: mousedown \| mousemove \| mouseup, callback: TEventCallback: (point: AMap.CircleMarker) => void)` |
+| once | 监听指定事件行为，触发一次后自动移除 | `once(eventName: mousedown \| mousemove \| mouseup, callback: TEventCallback: (point: AMap.CircleMarker) => void)` |
+| clearAll | 移除指定事件监听，`eventName` 不传则移除全部 | `clearAll(eventName?: mousedown \| mousemove \| mouseup)` |
+
+![多边形编辑器事件](./image/polygon_edtior_event.gif)
