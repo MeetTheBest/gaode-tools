@@ -1296,7 +1296,7 @@ class hs extends cs {
     });
     s(this, "onMouseDown", (r) => {
       const n = r.lnglat;
-      this.circleMarker = this.circleMarkers.getPointInCircleMarkers(n), !(!this.circleMarker || !this.getEvents("mousedown").length) && this.emit("mousedown", this.circleMarker);
+      this.circleMarker = this.circleMarkers.getPointInCircleMarkers(n), !(!this.circleMarker || !this.getEvents("mousedown").length) && this.emit("mousedown", this.circleMarker, { isMid: !1 });
     });
     s(this, "onMouseMove", (r) => {
       !this.circleMarker || !this.getEvents("mousemove").length || this.emit("mousemove", this.circleMarker, r);

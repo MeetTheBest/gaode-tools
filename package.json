@@ -1,6 +1,6 @@
 {
   "name": "gaode-tools",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "type": "module",
   "author": "fengjian",
   "description": "高德工具 多边型编辑器测距工具等",
@@ -28,7 +28,7 @@
     "dev": "vite",
     "build": "rimraf -rf ./dist && tsc && vite build",
     "preview": "vite preview",
-    "publish": "npm run build & npm publish"
+    "publish": "npm run build && npm publish"
   },
   "devDependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
