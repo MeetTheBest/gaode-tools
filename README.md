@@ -22,6 +22,10 @@ const polygonRangingIns = new PolygonRanging(map);
 ## 本地运行
 
 ```shell
+git clone https://github.com/MeetTheBest/gaode-tools.git
+
+cd gaode-tools
+
 npm install
 
 npm run dev
@@ -114,7 +118,9 @@ polygonEditorRangingIns.destroy();
 
 ![多边形编辑器测距](./image/polygon_editor_ranging.gif)
 
-### 多边形编辑器操作点事件
+### PolygonEditorEvent 多边形编辑器操作点事件
+
+为什么要做这个？因为高德的 `PolygonEditor` 的 `adjust` 事件，只支持在操作点位结束后响应，并且响应的内容是当前编辑的多边形。
 
 **示例**
 

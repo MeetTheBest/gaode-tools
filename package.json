@@ -27,7 +27,8 @@
   "scripts": {
     "dev": "vite",
     "build": "rimraf -rf ./dist && tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "publish": "npm run build & npm publish"
   },
   "devDependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
@@ -40,7 +41,6 @@
     "vite-plugin-dts": "^3.3.1"
   },
   "dependencies": {
-    "gaode-tools": "file:.yalc/gaode-tools",
     "install": "^0.13.0",
     "lodash-es": "^4.17.21",
     "vue": "^3.3.4"
