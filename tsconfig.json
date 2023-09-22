@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES2016",
     "useDefineForClassFields": true,
-    "module": "ESNext",
+    "module": "ES6",
     "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
+      "ES2016",
+      "DOM"
     ],
     "skipLibCheck": true,
     /* Bundler mode */

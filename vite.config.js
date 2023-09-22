@@ -14,6 +14,7 @@ export default defineConfig({
         open: true
     },
     build: {
+        target: "es2015",
         lib: {
             entry: './src/main.ts',
             name: 'gaode-tools',
