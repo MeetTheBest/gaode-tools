@@ -22,6 +22,20 @@ export default class PolygonRanging {
         this.lines = new LineCollection(this.map);
     }
 
+    get draggable() {
+        const options = this.polygon?.getOptions();
+        return options.draggable;
+    }
+
+    /**
+     * 开始边线测距
+     * @param polygon 
+     * @returns 
+     */
+    public open(polygon: AMap.Polygon) {
+        this.start(polygon);
+    }
+
     /**
      * 开始边线测距
      * @param polygon 
@@ -37,6 +51,26 @@ export default class PolygonRanging {
         this.lines!.createLinesByPaths(this.polygon.getPath() as Common.IPath);
         // 鼠标移动，判断是否命中了计算 PolygonEditor 的计算处理
         this.map.on('mousemove', this.onPolygonRanging);
+
+        this.registryPolygonEvents();
+    }
+
+    registryPolygonEvents() {
+        if (!this.polygon) return;
+
+        // 可拖动，注册拖动结束事件
+        if (this.draggable) {
+            this.polygon!.on('dragend', this.onDragEnd);
+        }
+    }
+
+    destroyPolygonEvents() {
+        if (!this.polygon) return;
+        this.polygon!.off('dragend', this.onDragEnd);
+    }
+
+    public close() {
+        this.stop();
     }
 
     public stop() {
@@ -72,14 +106,20 @@ export default class PolygonRanging {
     /**
      * 拖拽结束后，需要重新计算一下点位数据
      */
-    // private onDragEnd() {
-    //     //
-    // }
+    private onDragEnd = async (data: IObject) => {
+        const target = data.target;
+        this.lines?.reset();
+        // 等一个微任务
+        await Promise.resolve();
+        // 重新生成线条
+        this.lines!.createLinesByPaths(target.getPath() as Common.IPath);
+    }
 
     public destroy() {
         this.polygon = null;
         this.stop();
         this.removeLineDistanceText();
+        this.destroyPolygonEvents();
         return this;
     }
 }

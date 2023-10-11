@@ -25,7 +25,7 @@ export default class PolygonEditorEvent extends Event {
         this.polygonEditor = polygonEditor;
 
         this.circleMarkers = new CircleMarkerCollection(this.map);
-        this.start(this.polygonEditor);
+        this.open(this.polygonEditor);
     }
 
     /**
@@ -103,6 +103,13 @@ export default class PolygonEditorEvent extends Event {
     }
 
     /**
+ * 注册多边形编辑器，可操作点位事件
+ */
+    private open(polygonEditor: AMap.PolygonEditor) {
+        this.start(polygonEditor);
+    }
+
+    /**
      * 注册多边形编辑器，可操作点位事件
      */
     private start(polygonEditor: AMap.PolygonEditor) {
@@ -138,7 +145,14 @@ export default class PolygonEditorEvent extends Event {
     }
 
     /**
-     * 
+     * 停止事件行为
+     */
+    private close() {
+        this.stop();
+    }
+
+    /**
+     * 停止事件行为
      */
     private stop() {
         this.map.off('mousedown', this.onMouseDown);
@@ -197,7 +211,7 @@ export default class PolygonEditorEvent extends Event {
     };
 
     public destroy() {
-        this.stop();
+        this.close();
         this.circleMarkers!.destroy();
         return this;
     }

@@ -127,6 +127,15 @@ export default class PolygonEditorRanging {
 
     /**
      * 注册多边形编辑器，可操作点位事件
+     * @param polygonEditor 
+     */
+    public open(polygonEditor: AMap.PolygonEditor) {
+        this.start(polygonEditor);
+    }
+
+    /**
+     * 注册多边形编辑器，可操作点位事件
+     * @param polygonEditor 
      */
     public start(polygonEditor: AMap.PolygonEditor) {
         if (!polygonEditor && !this.polygonEditor) {
@@ -165,6 +174,13 @@ export default class PolygonEditorRanging {
         this.map.on('mouseup', this.onMouseUp);
 
         return this;
+    }
+
+    /**
+     * 移除多边形编辑器，可操作点位事件
+     */
+    public close() {
+        this.stop();
     }
 
     /**

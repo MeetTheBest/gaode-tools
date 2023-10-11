@@ -38,6 +38,8 @@ const createPolygon = () => {
 		fillColor: '#1791fc',
 		zIndex: 50,
 		bubble: true,
+		draggable: true,
+		cursor: 'pointer',
 	} as AMap.PolygonOptions;
 
 	polygon = new AMap.Polygon();
@@ -52,7 +54,7 @@ const createPolygon = () => {
 
 const createPolygonRanging = () => {
 	polygonRangingIns = new PolygonRanging(mapIns!);
-	polygonRangingIns.start(polygon!);
+	polygonRangingIns.open(polygon!);
 };
 
 onMounted(() => {

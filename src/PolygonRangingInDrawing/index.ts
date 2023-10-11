@@ -19,11 +19,25 @@ export default class PolygonRanging {
     }
 
     /**
+ * 注册地图事件
+ */
+    public open() {
+        this.start();
+    }
+
+    /**
      * 注册地图事件
      */
     public start() {
         this.map.on('click', this.getClickPosition);
         this.map.on('mousemove', this.onMouseMoveInDrawPolygon);
+    }
+
+    /**
+ * 移除地图注册事件
+ */
+    public close() {
+        this.stop();
     }
 
     /**
