@@ -4,17 +4,23 @@ import PolygonRangingInDrawing from './PolygonRangingInDrawing';
 import PolygonEditorRanging from './PolygonEditorRanging';
 import PolygonRanging from './PolygonRanging';
 import PolygonEditorEvent from './PolygonEditorEvent';
+import LikeRectangle from './LikeRectangle';
+import LikeRectangleEditor from './LikeRectangleEditor';
 
 export default {
   PolygonRangingInDrawing,
   PolygonEditorRanging,
   PolygonEditorEvent,
-  PolygonRanging
+  PolygonRanging,
+  LikeRectangle,
+  LikeRectangleEditor,
 }
 
 export {
   PolygonRangingInDrawing,
   PolygonEditorRanging,
   PolygonEditorEvent,
-  PolygonRanging
+  PolygonRanging,
+  LikeRectangle,
+  LikeRectangleEditor,
 };

@@ -40,7 +40,9 @@
     "vite-plugin-dts": "^3.3.1"
   },
   "dependencies": {
+    "@types/node": "^20.8.3",
     "lodash-es": "^4.17.21",
+    "moveable": "^0.51.2",
     "vue": "^3.3.4"
   },
   "publishConfig": {

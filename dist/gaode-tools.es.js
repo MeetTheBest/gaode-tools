@@ -1,16 +1,17 @@
-var Pe = Object.defineProperty;
-var gt = Object.getOwnPropertySymbols;
-var me = Object.prototype.hasOwnProperty, Me = Object.prototype.propertyIsEnumerable;
-var N = (t, e, r) => e in t ? Pe(t, e, { enumerable: !0, configurable: !0, writable: !0, value: r }) : t[e] = r, P = (t, e) => {
-  for (var r in e || (e = {}))
-    me.call(e, r) && N(t, r, e[r]);
-  if (gt)
-    for (var r of gt(e))
-      Me.call(e, r) && N(t, r, e[r]);
+var Ie = Object.defineProperty, De = Object.defineProperties;
+var Re = Object.getOwnPropertyDescriptors;
+var $t = Object.getOwnPropertySymbols;
+var Be = Object.prototype.hasOwnProperty, Fe = Object.prototype.propertyIsEnumerable;
+var et = (t, e, n) => e in t ? Ie(t, e, { enumerable: !0, configurable: !0, writable: !0, value: n }) : t[e] = n, E = (t, e) => {
+  for (var n in e || (e = {}))
+    Be.call(e, n) && et(t, n, e[n]);
+  if ($t)
+    for (var n of $t(e))
+      Fe.call(e, n) && et(t, n, e[n]);
   return t;
-};
-var s = (t, e, r) => (N(t, typeof e != "symbol" ? e + "" : e, r), r);
-const ve = {
+}, nt = (t, e) => De(t, Re(e));
+var a = (t, e, n) => (et(t, typeof e != "symbol" ? e + "" : e, n), n);
+const Ne = {
   "border-color": "#e1f5fe",
   "font-size": "12px",
   "border-radius": ".25rem",
@@ -18,43 +19,43 @@ const ve = {
   "border-width": 0,
   "text-align": "center",
   color: "#fff"
-}, j = (t = "", e = {}) => new AMap.Text({ text: t, style: P(P({}, ve), e), offset: [0, -10] }), A = (t, e) => {
-  const r = t.divideBy(2).add(e.divideBy(2));
-  return { text: `${Math.round(t.distance(e))}米`, textPos: r };
+}, N = (t = "", e = {}) => new AMap.Text({ text: t, style: E(E({}, Ne), e), offset: [0, -10] }), U = (t, e) => {
+  const n = t.divideBy(2).add(e.divideBy(2));
+  return { text: `${Math.round(t.distance(e))}米`, textPos: n };
 };
-let be = class {
+let Ue = class {
   constructor(e) {
-    s(this, "map");
+    a(this, "map");
     // 开始点位到鼠标位置的文本
-    s(this, "startPointToCursorText", null);
+    a(this, "startPointToCursorText", null);
     // 最后一次点位到鼠标位置的文本
-    s(this, "lastPointToCursorText", null);
+    a(this, "lastPointToCursorText", null);
     // 起始点位
-    s(this, "startPosition", null);
+    a(this, "startPosition", null);
     // 上次点击点位
-    s(this, "lastPosition", null);
+    a(this, "lastPosition", null);
     /**
      * 点图点击事件
      * @param {MapEvent} event
      */
-    s(this, "getClickPosition", (e) => {
-      const r = e.lnglat;
-      this.startPosition ? this.startPosition && (this.lastPosition = r, this.createDistanceText()) : this.startPosition = r;
+    a(this, "getClickPosition", (e) => {
+      const n = e.lnglat;
+      this.startPosition ? this.startPosition && (this.lastPosition = n, this.createDistanceText()) : this.startPosition = n;
     });
     /**
      * 获取新增围栏时，鼠标移动位置
      * @param {*} event
      */
-    s(this, "onMouseMoveInDrawPolygon", (e) => {
+    a(this, "onMouseMoveInDrawPolygon", (e) => {
       if (!this.startPosition || !this.lastPosition)
         return;
-      const r = e.lnglat;
+      const n = e.lnglat;
       this.updateDistanceText(
         this.startPointToCursorText,
-        A(this.startPosition, r)
+        U(this.startPosition, n)
       ), this.updateDistanceText(
         this.lastPointToCursorText,
-        A(this.lastPosition, r)
+        U(this.lastPosition, n)
       );
     });
     if (!e)
@@ -78,14 +79,14 @@ let be = class {
    * @returns
    */
   createDistanceText() {
-    this.startPointToCursorText && this.lastPointToCursorText || (this.startPointToCursorText = j(), this.startPointToCursorText.setMap(this.map), this.lastPointToCursorText = j(), this.lastPointToCursorText.setMap(this.map));
+    this.startPointToCursorText && this.lastPointToCursorText || (this.startPointToCursorText = N(), this.startPointToCursorText.setMap(this.map), this.lastPointToCursorText = N(), this.lastPointToCursorText.setMap(this.map));
   }
-  updateDistanceText(e, { text: r, textPos: n }) {
-    e.setText(r), e.setPosition(n);
+  updateDistanceText(e, { text: n, textPos: o }) {
+    e.setText(n), e.setPosition(o);
   }
   removeDistanceText() {
-    var e, r;
-    (e = this.startPointToCursorText) == null || e.remove(), this.startPointToCursorText = null, (r = this.lastPointToCursorText) == null || r.remove(), this.lastPointToCursorText = null;
+    var e, n;
+    (e = this.startPointToCursorText) == null || e.remove(), this.startPointToCursorText = null, (n = this.lastPointToCursorText) == null || n.remove(), this.lastPointToCursorText = null;
   }
   reset() {
     return this.startPosition = null, this.lastPosition = null, this.removeDistanceText(), this;
@@ -94,84 +95,110 @@ let be = class {
     return this.reset(), this.stop(), this;
   }
 };
-var xe = typeof global == "object" && global && global.Object === Object && global;
-const Rt = xe;
-var Ee = typeof self == "object" && self && self.Object === Object && self, $e = Rt || Ee || Function("return this")();
-const d = $e;
-var we = d.Symbol;
-const p = we;
-var Gt = Object.prototype, _e = Gt.hasOwnProperty, Ce = Gt.toString, S = p ? p.toStringTag : void 0;
-function je(t) {
-  var e = _e.call(t, S), r = t[S];
+var Ge = typeof global == "object" && global && global.Object === Object && global;
+const ee = Ge;
+var ze = typeof self == "object" && self && self.Object === Object && self, He = ee || ze || Function("return this")();
+const C = He;
+var We = C.Symbol;
+const $ = We;
+var ne = Object.prototype, Ke = ne.hasOwnProperty, Ve = ne.toString, W = $ ? $.toStringTag : void 0;
+function Ye(t) {
+  var e = Ke.call(t, W), n = t[W];
   try {
-    t[S] = void 0;
-    var n = !0;
+    t[W] = void 0;
+    var o = !0;
   } catch (i) {
   }
-  var o = Ce.call(t);
-  return n && (e ? t[S] = r : delete t[S]), o;
+  var r = Ve.call(t);
+  return o && (e ? t[W] = n : delete t[W]), r;
 }
-var Ae = Object.prototype, Oe = Ae.toString;
-function Le(t) {
-  return Oe.call(t);
+var Xe = Object.prototype, Ze = Xe.toString;
+function qe(t) {
+  return Ze.call(t);
 }
-var Se = "[object Null]", Ie = "[object Undefined]", ft = p ? p.toStringTag : void 0;
-function x(t) {
-  return t == null ? t === void 0 ? Ie : Se : ft && ft in Object(t) ? je(t) : Le(t);
+var Je = "[object Null]", Qe = "[object Undefined]", wt = $ ? $.toStringTag : void 0;
+function I(t) {
+  return t == null ? t === void 0 ? Qe : Je : wt && wt in Object(t) ? Ye(t) : qe(t);
 }
-function E(t) {
+function D(t) {
   return t != null && typeof t == "object";
 }
-var ke = "[object Symbol]";
-function Z(t) {
-  return typeof t == "symbol" || E(t) && x(t) == ke;
+var tn = "[object Symbol]";
+function J(t) {
+  return typeof t == "symbol" || D(t) && I(t) == tn;
 }
-function zt(t, e) {
-  for (var r = -1, n = t == null ? 0 : t.length, o = Array(n); ++r < n; )
-    o[r] = e(t[r], r, t);
-  return o;
+function oe(t, e) {
+  for (var n = -1, o = t == null ? 0 : t.length, r = Array(o); ++n < o; )
+    r[n] = e(t[n], n, t);
+  return r;
 }
-var De = Array.isArray;
-const $ = De;
-var Fe = 1 / 0, pt = p ? p.prototype : void 0, dt = pt ? pt.toString : void 0;
-function Nt(t) {
+var en = Array.isArray;
+const R = en;
+var nn = 1 / 0, _t = $ ? $.prototype : void 0, kt = _t ? _t.toString : void 0;
+function re(t) {
   if (typeof t == "string")
     return t;
-  if ($(t))
-    return zt(t, Nt) + "";
-  if (Z(t))
-    return dt ? dt.call(t) : "";
+  if (R(t))
+    return oe(t, re) + "";
+  if (J(t))
+    return kt ? kt.call(t) : "";
   var e = t + "";
-  return e == "0" && 1 / t == -Fe ? "-0" : e;
+  return e == "0" && 1 / t == -nn ? "-0" : e;
 }
-function F(t) {
+var on = /\s/;
+function rn(t) {
+  for (var e = t.length; e-- && on.test(t.charAt(e)); )
+    ;
+  return e;
+}
+var sn = /^\s+/;
+function an(t) {
+  return t && t.slice(0, rn(t) + 1).replace(sn, "");
+}
+function w(t) {
   var e = typeof t;
   return t != null && (e == "object" || e == "function");
 }
-function Be(t) {
+var Lt = 0 / 0, ln = /^[-+]0x[0-9a-f]+$/i, hn = /^0b[01]+$/i, cn = /^0o[0-7]+$/i, un = parseInt;
+function lt(t) {
+  if (typeof t == "number")
+    return t;
+  if (J(t))
+    return Lt;
+  if (w(t)) {
+    var e = typeof t.valueOf == "function" ? t.valueOf() : t;
+    t = w(e) ? e + "" : e;
+  }
+  if (typeof t != "string")
+    return t === 0 ? t : +t;
+  t = an(t);
+  var n = hn.test(t);
+  return n || cn.test(t) ? un(t.slice(2), n ? 2 : 8) : ln.test(t) ? Lt : +t;
+}
+function ie(t) {
   return t;
 }
-var Ue = "[object AsyncFunction]", Re = "[object Function]", Ge = "[object GeneratorFunction]", ze = "[object Proxy]";
-function Kt(t) {
-  if (!F(t))
+var gn = "[object AsyncFunction]", pn = "[object Function]", fn = "[object GeneratorFunction]", dn = "[object Proxy]";
+function se(t) {
+  if (!w(t))
     return !1;
-  var e = x(t);
-  return e == Re || e == Ge || e == Ue || e == ze;
+  var e = I(t);
+  return e == pn || e == fn || e == gn || e == dn;
 }
-var Ne = d["__core-js_shared__"];
-const K = Ne;
-var yt = function() {
-  var t = /[^.]+$/.exec(K && K.keys && K.keys.IE_PROTO || "");
+var yn = C["__core-js_shared__"];
+const ot = yn;
+var Ot = function() {
+  var t = /[^.]+$/.exec(ot && ot.keys && ot.keys.IE_PROTO || "");
   return t ? "Symbol(src)_1." + t : "";
 }();
-function Ke(t) {
-  return !!yt && yt in t;
+function Tn(t) {
+  return !!Ot && Ot in t;
 }
-var He = Function.prototype, Ve = He.toString;
-function w(t) {
+var Pn = Function.prototype, mn = Pn.toString;
+function B(t) {
   if (t != null) {
     try {
-      return Ve.call(t);
+      return mn.call(t);
     } catch (e) {
     }
     try {
@@ -181,740 +208,819 @@ function w(t) {
   }
   return "";
 }
-var We = /[\\^$.*+?()[\]{}|]/g, Ye = /^\[object .+?Constructor\]$/, Xe = Function.prototype, qe = Object.prototype, Ze = Xe.toString, Je = qe.hasOwnProperty, Qe = RegExp(
-  "^" + Ze.call(Je).replace(We, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
+var xn = /[\\^$.*+?()[\]{}|]/g, bn = /^\[object .+?Constructor\]$/, vn = Function.prototype, Mn = Object.prototype, En = vn.toString, Cn = Mn.hasOwnProperty, $n = RegExp(
+  "^" + En.call(Cn).replace(xn, "\\$&").replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, "$1.*?") + "$"
 );
-function tr(t) {
-  if (!F(t) || Ke(t))
+function wn(t) {
+  if (!w(t) || Tn(t))
     return !1;
-  var e = Kt(t) ? Qe : Ye;
-  return e.test(w(t));
+  var e = se(t) ? $n : bn;
+  return e.test(B(t));
 }
-function er(t, e) {
+function _n(t, e) {
   return t == null ? void 0 : t[e];
 }
-function _(t, e) {
-  var r = er(t, e);
-  return tr(r) ? r : void 0;
+function F(t, e) {
+  var n = _n(t, e);
+  return wn(n) ? n : void 0;
 }
-var rr = _(d, "WeakMap");
-const V = rr;
-var Tt = Object.create, nr = function() {
+var kn = F(C, "WeakMap");
+const ht = kn;
+var At = Object.create, Ln = function() {
   function t() {
   }
   return function(e) {
-    if (!F(e))
+    if (!w(e))
       return {};
-    if (Tt)
-      return Tt(e);
+    if (At)
+      return At(e);
     t.prototype = e;
-    var r = new t();
-    return t.prototype = void 0, r;
+    var n = new t();
+    return t.prototype = void 0, n;
   };
 }();
-const or = nr;
-function ir(t, e, r) {
-  switch (r.length) {
+const On = Ln;
+function An(t, e, n) {
+  switch (n.length) {
     case 0:
       return t.call(e);
     case 1:
-      return t.call(e, r[0]);
+      return t.call(e, n[0]);
     case 2:
-      return t.call(e, r[0], r[1]);
+      return t.call(e, n[0], n[1]);
     case 3:
-      return t.call(e, r[0], r[1], r[2]);
+      return t.call(e, n[0], n[1], n[2]);
   }
-  return t.apply(e, r);
+  return t.apply(e, n);
 }
-function sr(t, e) {
-  var r = -1, n = t.length;
-  for (e || (e = Array(n)); ++r < n; )
-    e[r] = t[r];
+function jn(t, e) {
+  var n = -1, o = t.length;
+  for (e || (e = Array(o)); ++n < o; )
+    e[n] = t[n];
   return e;
 }
-var ar = 800, lr = 16, cr = Date.now;
-function hr(t) {
-  var e = 0, r = 0;
+var Sn = 800, In = 16, Dn = Date.now;
+function Rn(t) {
+  var e = 0, n = 0;
   return function() {
-    var n = cr(), o = lr - (n - r);
-    if (r = n, o > 0) {
-      if (++e >= ar)
+    var o = Dn(), r = In - (o - n);
+    if (n = o, r > 0) {
+      if (++e >= Sn)
         return arguments[0];
     } else
       e = 0;
     return t.apply(void 0, arguments);
   };
 }
-function ur(t) {
+function Bn(t) {
   return function() {
     return t;
   };
 }
-var gr = function() {
+var Fn = function() {
   try {
-    var t = _(Object, "defineProperty");
+    var t = F(Object, "defineProperty");
     return t({}, "", {}), t;
   } catch (e) {
   }
 }();
-const R = gr;
-var fr = R ? function(t, e) {
-  return R(t, "toString", {
+const q = Fn;
+var Nn = q ? function(t, e) {
+  return q(t, "toString", {
     configurable: !0,
     enumerable: !1,
-    value: ur(e),
+    value: Bn(e),
     writable: !0
   });
-} : Be;
-const pr = fr;
-var dr = hr(pr);
-const yr = dr;
-function Tr(t, e) {
-  for (var r = -1, n = t == null ? 0 : t.length; ++r < n && e(t[r], r, t) !== !1; )
+} : ie;
+const Un = Nn;
+var Gn = Rn(Un);
+const ae = Gn;
+function zn(t, e) {
+  for (var n = -1, o = t == null ? 0 : t.length; ++n < o && e(t[n], n, t) !== !1; )
     ;
   return t;
 }
-var Pr = 9007199254740991, mr = /^(?:0|[1-9]\d*)$/;
-function Mr(t, e) {
-  var r = typeof t;
-  return e = e == null ? Pr : e, !!e && (r == "number" || r != "symbol" && mr.test(t)) && t > -1 && t % 1 == 0 && t < e;
+var Hn = 9007199254740991, Wn = /^(?:0|[1-9]\d*)$/;
+function Kn(t, e) {
+  var n = typeof t;
+  return e = e == null ? Hn : e, !!e && (n == "number" || n != "symbol" && Wn.test(t)) && t > -1 && t % 1 == 0 && t < e;
 }
-function Ht(t, e, r) {
-  e == "__proto__" && R ? R(t, e, {
+function le(t, e, n) {
+  e == "__proto__" && q ? q(t, e, {
     configurable: !0,
     enumerable: !0,
-    value: r,
+    value: n,
     writable: !0
-  }) : t[e] = r;
+  }) : t[e] = n;
 }
-function Vt(t, e) {
+function he(t, e) {
   return t === e || t !== t && e !== e;
 }
-var vr = Object.prototype, br = vr.hasOwnProperty;
-function Wt(t, e, r) {
-  var n = t[e];
-  (!(br.call(t, e) && Vt(n, r)) || r === void 0 && !(e in t)) && Ht(t, e, r);
+var Vn = Object.prototype, Yn = Vn.hasOwnProperty;
+function ce(t, e, n) {
+  var o = t[e];
+  (!(Yn.call(t, e) && he(o, n)) || n === void 0 && !(e in t)) && le(t, e, n);
 }
-function B(t, e, r, n) {
-  var o = !r;
-  r || (r = {});
-  for (var i = -1, a = e.length; ++i < a; ) {
-    var l = e[i], u = n ? n(r[l], t[l], l, r, t) : void 0;
-    u === void 0 && (u = t[l]), o ? Ht(r, l, u) : Wt(r, l, u);
+function X(t, e, n, o) {
+  var r = !n;
+  n || (n = {});
+  for (var i = -1, s = e.length; ++i < s; ) {
+    var l = e[i], h = o ? o(n[l], t[l], l, n, t) : void 0;
+    h === void 0 && (h = t[l]), r ? le(n, l, h) : ce(n, l, h);
   }
-  return r;
-}
-var Pt = Math.max;
-function xr(t, e, r) {
-  return e = Pt(e === void 0 ? t.length - 1 : e, 0), function() {
-    for (var n = arguments, o = -1, i = Pt(n.length - e, 0), a = Array(i); ++o < i; )
-      a[o] = n[e + o];
-    o = -1;
-    for (var l = Array(e + 1); ++o < e; )
-      l[o] = n[o];
-    return l[e] = r(a), ir(t, this, l);
-  };
-}
-var Er = 9007199254740991;
-function Yt(t) {
-  return typeof t == "number" && t > -1 && t % 1 == 0 && t <= Er;
-}
-function Xt(t) {
-  return t != null && Yt(t.length) && !Kt(t);
-}
-var $r = Object.prototype;
-function J(t) {
-  var e = t && t.constructor, r = typeof e == "function" && e.prototype || $r;
-  return t === r;
-}
-function wr(t, e) {
-  for (var r = -1, n = Array(t); ++r < t; )
-    n[r] = e(r);
   return n;
 }
-var _r = "[object Arguments]";
-function mt(t) {
-  return E(t) && x(t) == _r;
+var jt = Math.max;
+function ue(t, e, n) {
+  return e = jt(e === void 0 ? t.length - 1 : e, 0), function() {
+    for (var o = arguments, r = -1, i = jt(o.length - e, 0), s = Array(i); ++r < i; )
+      s[r] = o[e + r];
+    r = -1;
+    for (var l = Array(e + 1); ++r < e; )
+      l[r] = o[r];
+    return l[e] = n(s), An(t, this, l);
+  };
 }
-var qt = Object.prototype, Cr = qt.hasOwnProperty, jr = qt.propertyIsEnumerable, Ar = mt(function() {
+function Xn(t, e) {
+  return ae(ue(t, e, ie), t + "");
+}
+var Zn = 9007199254740991;
+function ge(t) {
+  return typeof t == "number" && t > -1 && t % 1 == 0 && t <= Zn;
+}
+function pe(t) {
+  return t != null && ge(t.length) && !se(t);
+}
+var qn = Object.prototype;
+function ft(t) {
+  var e = t && t.constructor, n = typeof e == "function" && e.prototype || qn;
+  return t === n;
+}
+function Jn(t, e) {
+  for (var n = -1, o = Array(t); ++n < t; )
+    o[n] = e(n);
+  return o;
+}
+var Qn = "[object Arguments]";
+function St(t) {
+  return D(t) && I(t) == Qn;
+}
+var fe = Object.prototype, to = fe.hasOwnProperty, eo = fe.propertyIsEnumerable, no = St(function() {
   return arguments;
-}()) ? mt : function(t) {
-  return E(t) && Cr.call(t, "callee") && !jr.call(t, "callee");
+}()) ? St : function(t) {
+  return D(t) && to.call(t, "callee") && !eo.call(t, "callee");
 };
-const Zt = Ar;
-function Or() {
+const de = no;
+function oo() {
   return !1;
 }
-var Jt = typeof exports == "object" && exports && !exports.nodeType && exports, Mt = Jt && typeof module == "object" && module && !module.nodeType && module, Lr = Mt && Mt.exports === Jt, vt = Lr ? d.Buffer : void 0, Sr = vt ? vt.isBuffer : void 0, Ir = Sr || Or;
-const Qt = Ir;
-var kr = "[object Arguments]", Dr = "[object Array]", Fr = "[object Boolean]", Br = "[object Date]", Ur = "[object Error]", Rr = "[object Function]", Gr = "[object Map]", zr = "[object Number]", Nr = "[object Object]", Kr = "[object RegExp]", Hr = "[object Set]", Vr = "[object String]", Wr = "[object WeakMap]", Yr = "[object ArrayBuffer]", Xr = "[object DataView]", qr = "[object Float32Array]", Zr = "[object Float64Array]", Jr = "[object Int8Array]", Qr = "[object Int16Array]", tn = "[object Int32Array]", en = "[object Uint8Array]", rn = "[object Uint8ClampedArray]", nn = "[object Uint16Array]", on = "[object Uint32Array]", h = {};
-h[qr] = h[Zr] = h[Jr] = h[Qr] = h[tn] = h[en] = h[rn] = h[nn] = h[on] = !0;
-h[kr] = h[Dr] = h[Yr] = h[Fr] = h[Xr] = h[Br] = h[Ur] = h[Rr] = h[Gr] = h[zr] = h[Nr] = h[Kr] = h[Hr] = h[Vr] = h[Wr] = !1;
-function sn(t) {
-  return E(t) && Yt(t.length) && !!h[x(t)];
+var ye = typeof exports == "object" && exports && !exports.nodeType && exports, It = ye && typeof module == "object" && module && !module.nodeType && module, ro = It && It.exports === ye, Dt = ro ? C.Buffer : void 0, io = Dt ? Dt.isBuffer : void 0, so = io || oo;
+const Te = so;
+var ao = "[object Arguments]", lo = "[object Array]", ho = "[object Boolean]", co = "[object Date]", uo = "[object Error]", go = "[object Function]", po = "[object Map]", fo = "[object Number]", yo = "[object Object]", To = "[object RegExp]", Po = "[object Set]", mo = "[object String]", xo = "[object WeakMap]", bo = "[object ArrayBuffer]", vo = "[object DataView]", Mo = "[object Float32Array]", Eo = "[object Float64Array]", Co = "[object Int8Array]", $o = "[object Int16Array]", wo = "[object Int32Array]", _o = "[object Uint8Array]", ko = "[object Uint8ClampedArray]", Lo = "[object Uint16Array]", Oo = "[object Uint32Array]", g = {};
+g[Mo] = g[Eo] = g[Co] = g[$o] = g[wo] = g[_o] = g[ko] = g[Lo] = g[Oo] = !0;
+g[ao] = g[lo] = g[bo] = g[ho] = g[vo] = g[co] = g[uo] = g[go] = g[po] = g[fo] = g[yo] = g[To] = g[Po] = g[mo] = g[xo] = !1;
+function Ao(t) {
+  return D(t) && ge(t.length) && !!g[I(t)];
 }
-function Q(t) {
+function dt(t) {
   return function(e) {
     return t(e);
   };
 }
-var te = typeof exports == "object" && exports && !exports.nodeType && exports, I = te && typeof module == "object" && module && !module.nodeType && module, an = I && I.exports === te, H = an && Rt.process, ln = function() {
+var Pe = typeof exports == "object" && exports && !exports.nodeType && exports, K = Pe && typeof module == "object" && module && !module.nodeType && module, jo = K && K.exports === Pe, rt = jo && ee.process, So = function() {
   try {
-    var t = I && I.require && I.require("util").types;
-    return t || H && H.binding && H.binding("util");
+    var t = K && K.require && K.require("util").types;
+    return t || rt && rt.binding && rt.binding("util");
   } catch (e) {
   }
 }();
-const O = ln;
-var bt = O && O.isTypedArray, cn = bt ? Q(bt) : sn;
-const hn = cn;
-var un = Object.prototype, gn = un.hasOwnProperty;
-function ee(t, e) {
-  var r = $(t), n = !r && Zt(t), o = !r && !n && Qt(t), i = !r && !n && !o && hn(t), a = r || n || o || i, l = a ? wr(t.length, String) : [], u = l.length;
-  for (var g in t)
-    (e || gn.call(t, g)) && !(a && // Safari 9 has enumerable `arguments.length` in strict mode.
-    (g == "length" || // Node.js 0.10 has enumerable non-index properties on buffers.
-    o && (g == "offset" || g == "parent") || // PhantomJS 2 has enumerable non-index properties on typed arrays.
-    i && (g == "buffer" || g == "byteLength" || g == "byteOffset") || // Skip index properties.
-    Mr(g, u))) && l.push(g);
+const G = So;
+var Rt = G && G.isTypedArray, Io = Rt ? dt(Rt) : Ao;
+const Do = Io;
+var Ro = Object.prototype, Bo = Ro.hasOwnProperty;
+function me(t, e) {
+  var n = R(t), o = !n && de(t), r = !n && !o && Te(t), i = !n && !o && !r && Do(t), s = n || o || r || i, l = s ? Jn(t.length, String) : [], h = l.length;
+  for (var c in t)
+    (e || Bo.call(t, c)) && !(s && // Safari 9 has enumerable `arguments.length` in strict mode.
+    (c == "length" || // Node.js 0.10 has enumerable non-index properties on buffers.
+    r && (c == "offset" || c == "parent") || // PhantomJS 2 has enumerable non-index properties on typed arrays.
+    i && (c == "buffer" || c == "byteLength" || c == "byteOffset") || // Skip index properties.
+    Kn(c, h))) && l.push(c);
   return l;
 }
-function re(t, e) {
-  return function(r) {
-    return t(e(r));
+function xe(t, e) {
+  return function(n) {
+    return t(e(n));
   };
 }
-var fn = re(Object.keys, Object);
-const pn = fn;
-var dn = Object.prototype, yn = dn.hasOwnProperty;
-function Tn(t) {
-  if (!J(t))
-    return pn(t);
+var Fo = xe(Object.keys, Object);
+const No = Fo;
+var Uo = Object.prototype, Go = Uo.hasOwnProperty;
+function zo(t) {
+  if (!ft(t))
+    return No(t);
   var e = [];
-  for (var r in Object(t))
-    yn.call(t, r) && r != "constructor" && e.push(r);
+  for (var n in Object(t))
+    Go.call(t, n) && n != "constructor" && e.push(n);
   return e;
 }
-function tt(t) {
-  return Xt(t) ? ee(t) : Tn(t);
+function yt(t) {
+  return pe(t) ? me(t) : zo(t);
 }
-function Pn(t) {
+function Ho(t) {
   var e = [];
   if (t != null)
-    for (var r in Object(t))
-      e.push(r);
+    for (var n in Object(t))
+      e.push(n);
   return e;
 }
-var mn = Object.prototype, Mn = mn.hasOwnProperty;
-function vn(t) {
-  if (!F(t))
-    return Pn(t);
-  var e = J(t), r = [];
-  for (var n in t)
-    n == "constructor" && (e || !Mn.call(t, n)) || r.push(n);
-  return r;
+var Wo = Object.prototype, Ko = Wo.hasOwnProperty;
+function Vo(t) {
+  if (!w(t))
+    return Ho(t);
+  var e = ft(t), n = [];
+  for (var o in t)
+    o == "constructor" && (e || !Ko.call(t, o)) || n.push(o);
+  return n;
 }
-function et(t) {
-  return Xt(t) ? ee(t, !0) : vn(t);
+function Tt(t) {
+  return pe(t) ? me(t, !0) : Vo(t);
 }
-var bn = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/, xn = /^\w*$/;
-function En(t, e) {
-  if ($(t))
+var Yo = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/, Xo = /^\w*$/;
+function Zo(t, e) {
+  if (R(t))
     return !1;
-  var r = typeof t;
-  return r == "number" || r == "symbol" || r == "boolean" || t == null || Z(t) ? !0 : xn.test(t) || !bn.test(t) || e != null && t in Object(e);
+  var n = typeof t;
+  return n == "number" || n == "symbol" || n == "boolean" || t == null || J(t) ? !0 : Xo.test(t) || !Yo.test(t) || e != null && t in Object(e);
 }
-var $n = _(Object, "create");
-const k = $n;
-function wn() {
-  this.__data__ = k ? k(null) : {}, this.size = 0;
+var qo = F(Object, "create");
+const V = qo;
+function Jo() {
+  this.__data__ = V ? V(null) : {}, this.size = 0;
 }
-function _n(t) {
+function Qo(t) {
   var e = this.has(t) && delete this.__data__[t];
   return this.size -= e ? 1 : 0, e;
 }
-var Cn = "__lodash_hash_undefined__", jn = Object.prototype, An = jn.hasOwnProperty;
-function On(t) {
+var tr = "__lodash_hash_undefined__", er = Object.prototype, nr = er.hasOwnProperty;
+function or(t) {
   var e = this.__data__;
-  if (k) {
-    var r = e[t];
-    return r === Cn ? void 0 : r;
+  if (V) {
+    var n = e[t];
+    return n === tr ? void 0 : n;
   }
-  return An.call(e, t) ? e[t] : void 0;
+  return nr.call(e, t) ? e[t] : void 0;
 }
-var Ln = Object.prototype, Sn = Ln.hasOwnProperty;
-function In(t) {
+var rr = Object.prototype, ir = rr.hasOwnProperty;
+function sr(t) {
   var e = this.__data__;
-  return k ? e[t] !== void 0 : Sn.call(e, t);
+  return V ? e[t] !== void 0 : ir.call(e, t);
 }
-var kn = "__lodash_hash_undefined__";
-function Dn(t, e) {
-  var r = this.__data__;
-  return this.size += this.has(t) ? 0 : 1, r[t] = k && e === void 0 ? kn : e, this;
+var ar = "__lodash_hash_undefined__";
+function lr(t, e) {
+  var n = this.__data__;
+  return this.size += this.has(t) ? 0 : 1, n[t] = V && e === void 0 ? ar : e, this;
 }
-function b(t) {
-  var e = -1, r = t == null ? 0 : t.length;
-  for (this.clear(); ++e < r; ) {
-    var n = t[e];
-    this.set(n[0], n[1]);
+function S(t) {
+  var e = -1, n = t == null ? 0 : t.length;
+  for (this.clear(); ++e < n; ) {
+    var o = t[e];
+    this.set(o[0], o[1]);
   }
 }
-b.prototype.clear = wn;
-b.prototype.delete = _n;
-b.prototype.get = On;
-b.prototype.has = In;
-b.prototype.set = Dn;
-function Fn() {
+S.prototype.clear = Jo;
+S.prototype.delete = Qo;
+S.prototype.get = or;
+S.prototype.has = sr;
+S.prototype.set = lr;
+function hr() {
   this.__data__ = [], this.size = 0;
 }
-function G(t, e) {
-  for (var r = t.length; r--; )
-    if (Vt(t[r][0], e))
-      return r;
+function Q(t, e) {
+  for (var n = t.length; n--; )
+    if (he(t[n][0], e))
+      return n;
   return -1;
 }
-var Bn = Array.prototype, Un = Bn.splice;
-function Rn(t) {
-  var e = this.__data__, r = G(e, t);
-  if (r < 0)
+var cr = Array.prototype, ur = cr.splice;
+function gr(t) {
+  var e = this.__data__, n = Q(e, t);
+  if (n < 0)
     return !1;
-  var n = e.length - 1;
-  return r == n ? e.pop() : Un.call(e, r, 1), --this.size, !0;
+  var o = e.length - 1;
+  return n == o ? e.pop() : ur.call(e, n, 1), --this.size, !0;
 }
-function Gn(t) {
-  var e = this.__data__, r = G(e, t);
-  return r < 0 ? void 0 : e[r][1];
+function pr(t) {
+  var e = this.__data__, n = Q(e, t);
+  return n < 0 ? void 0 : e[n][1];
 }
-function zn(t) {
-  return G(this.__data__, t) > -1;
+function fr(t) {
+  return Q(this.__data__, t) > -1;
 }
-function Nn(t, e) {
-  var r = this.__data__, n = G(r, t);
-  return n < 0 ? (++this.size, r.push([t, e])) : r[n][1] = e, this;
+function dr(t, e) {
+  var n = this.__data__, o = Q(n, t);
+  return o < 0 ? (++this.size, n.push([t, e])) : n[o][1] = e, this;
 }
-function y(t) {
-  var e = -1, r = t == null ? 0 : t.length;
-  for (this.clear(); ++e < r; ) {
-    var n = t[e];
-    this.set(n[0], n[1]);
+function _(t) {
+  var e = -1, n = t == null ? 0 : t.length;
+  for (this.clear(); ++e < n; ) {
+    var o = t[e];
+    this.set(o[0], o[1]);
   }
 }
-y.prototype.clear = Fn;
-y.prototype.delete = Rn;
-y.prototype.get = Gn;
-y.prototype.has = zn;
-y.prototype.set = Nn;
-var Kn = _(d, "Map");
-const D = Kn;
-function Hn() {
+_.prototype.clear = hr;
+_.prototype.delete = gr;
+_.prototype.get = pr;
+_.prototype.has = fr;
+_.prototype.set = dr;
+var yr = F(C, "Map");
+const Y = yr;
+function Tr() {
   this.size = 0, this.__data__ = {
-    hash: new b(),
-    map: new (D || y)(),
-    string: new b()
+    hash: new S(),
+    map: new (Y || _)(),
+    string: new S()
   };
 }
-function Vn(t) {
+function Pr(t) {
   var e = typeof t;
   return e == "string" || e == "number" || e == "symbol" || e == "boolean" ? t !== "__proto__" : t === null;
 }
-function z(t, e) {
-  var r = t.__data__;
-  return Vn(e) ? r[typeof e == "string" ? "string" : "hash"] : r.map;
+function tt(t, e) {
+  var n = t.__data__;
+  return Pr(e) ? n[typeof e == "string" ? "string" : "hash"] : n.map;
 }
-function Wn(t) {
-  var e = z(this, t).delete(t);
+function mr(t) {
+  var e = tt(this, t).delete(t);
   return this.size -= e ? 1 : 0, e;
 }
-function Yn(t) {
-  return z(this, t).get(t);
+function xr(t) {
+  return tt(this, t).get(t);
 }
-function Xn(t) {
-  return z(this, t).has(t);
+function br(t) {
+  return tt(this, t).has(t);
 }
-function qn(t, e) {
-  var r = z(this, t), n = r.size;
-  return r.set(t, e), this.size += r.size == n ? 0 : 1, this;
-}
-function m(t) {
-  var e = -1, r = t == null ? 0 : t.length;
-  for (this.clear(); ++e < r; ) {
-    var n = t[e];
-    this.set(n[0], n[1]);
-  }
-}
-m.prototype.clear = Hn;
-m.prototype.delete = Wn;
-m.prototype.get = Yn;
-m.prototype.has = Xn;
-m.prototype.set = qn;
-var Zn = "Expected a function";
-function rt(t, e) {
-  if (typeof t != "function" || e != null && typeof e != "function")
-    throw new TypeError(Zn);
-  var r = function() {
-    var n = arguments, o = e ? e.apply(this, n) : n[0], i = r.cache;
-    if (i.has(o))
-      return i.get(o);
-    var a = t.apply(this, n);
-    return r.cache = i.set(o, a) || i, a;
-  };
-  return r.cache = new (rt.Cache || m)(), r;
-}
-rt.Cache = m;
-var Jn = 500;
-function Qn(t) {
-  var e = rt(t, function(n) {
-    return r.size === Jn && r.clear(), n;
-  }), r = e.cache;
-  return e;
-}
-var to = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g, eo = /\\(\\)?/g, ro = Qn(function(t) {
-  var e = [];
-  return t.charCodeAt(0) === 46 && e.push(""), t.replace(to, function(r, n, o, i) {
-    e.push(o ? i.replace(eo, "$1") : n || r);
-  }), e;
-});
-const no = ro;
-function oo(t) {
-  return t == null ? "" : Nt(t);
-}
-function nt(t, e) {
-  return $(t) ? t : En(t, e) ? [t] : no(oo(t));
-}
-var io = 1 / 0;
-function ne(t) {
-  if (typeof t == "string" || Z(t))
-    return t;
-  var e = t + "";
-  return e == "0" && 1 / t == -io ? "-0" : e;
-}
-function oe(t, e) {
-  e = nt(e, t);
-  for (var r = 0, n = e.length; t != null && r < n; )
-    t = t[ne(e[r++])];
-  return r && r == n ? t : void 0;
-}
-function ie(t, e, r) {
-  var n = t == null ? void 0 : oe(t, e);
-  return n === void 0 ? r : n;
-}
-function ot(t, e) {
-  for (var r = -1, n = e.length, o = t.length; ++r < n; )
-    t[o + r] = e[r];
-  return t;
-}
-var xt = p ? p.isConcatSpreadable : void 0;
-function so(t) {
-  return $(t) || Zt(t) || !!(xt && t && t[xt]);
-}
-function se(t, e, r, n, o) {
-  var i = -1, a = t.length;
-  for (r || (r = so), o || (o = []); ++i < a; ) {
-    var l = t[i];
-    e > 0 && r(l) ? e > 1 ? se(l, e - 1, r, n, o) : ot(o, l) : n || (o[o.length] = l);
-  }
-  return o;
-}
-function ao(t) {
-  var e = t == null ? 0 : t.length;
-  return e ? se(t, 1) : [];
-}
-function lo(t) {
-  return yr(xr(t, void 0, ao), t + "");
-}
-var co = re(Object.getPrototypeOf, Object);
-const it = co;
-var ho = "[object Object]", uo = Function.prototype, go = Object.prototype, ae = uo.toString, fo = go.hasOwnProperty, po = ae.call(Object);
-function yo(t) {
-  if (!E(t) || x(t) != ho)
-    return !1;
-  var e = it(t);
-  if (e === null)
-    return !0;
-  var r = fo.call(e, "constructor") && e.constructor;
-  return typeof r == "function" && r instanceof r && ae.call(r) == po;
-}
-function To(t, e, r) {
-  var n = -1, o = t.length;
-  e < 0 && (e = -e > o ? 0 : o + e), r = r > o ? o : r, r < 0 && (r += o), o = e > r ? 0 : r - e >>> 0, e >>>= 0;
-  for (var i = Array(o); ++n < o; )
-    i[n] = t[n + e];
-  return i;
-}
-function Po() {
-  this.__data__ = new y(), this.size = 0;
-}
-function mo(t) {
-  var e = this.__data__, r = e.delete(t);
-  return this.size = e.size, r;
-}
-function Mo(t) {
-  return this.__data__.get(t);
-}
-function vo(t) {
-  return this.__data__.has(t);
-}
-var bo = 200;
-function xo(t, e) {
-  var r = this.__data__;
-  if (r instanceof y) {
-    var n = r.__data__;
-    if (!D || n.length < bo - 1)
-      return n.push([t, e]), this.size = ++r.size, this;
-    r = this.__data__ = new m(n);
-  }
-  return r.set(t, e), this.size = r.size, this;
+function vr(t, e) {
+  var n = tt(this, t), o = n.size;
+  return n.set(t, e), this.size += n.size == o ? 0 : 1, this;
 }
 function L(t) {
-  var e = this.__data__ = new y(t);
+  var e = -1, n = t == null ? 0 : t.length;
+  for (this.clear(); ++e < n; ) {
+    var o = t[e];
+    this.set(o[0], o[1]);
+  }
+}
+L.prototype.clear = Tr;
+L.prototype.delete = mr;
+L.prototype.get = xr;
+L.prototype.has = br;
+L.prototype.set = vr;
+var Mr = "Expected a function";
+function Pt(t, e) {
+  if (typeof t != "function" || e != null && typeof e != "function")
+    throw new TypeError(Mr);
+  var n = function() {
+    var o = arguments, r = e ? e.apply(this, o) : o[0], i = n.cache;
+    if (i.has(r))
+      return i.get(r);
+    var s = t.apply(this, o);
+    return n.cache = i.set(r, s) || i, s;
+  };
+  return n.cache = new (Pt.Cache || L)(), n;
+}
+Pt.Cache = L;
+var Er = 500;
+function Cr(t) {
+  var e = Pt(t, function(o) {
+    return n.size === Er && n.clear(), o;
+  }), n = e.cache;
+  return e;
+}
+var $r = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g, wr = /\\(\\)?/g, _r = Cr(function(t) {
+  var e = [];
+  return t.charCodeAt(0) === 46 && e.push(""), t.replace($r, function(n, o, r, i) {
+    e.push(r ? i.replace(wr, "$1") : o || n);
+  }), e;
+});
+const kr = _r;
+function Lr(t) {
+  return t == null ? "" : re(t);
+}
+function mt(t, e) {
+  return R(t) ? t : Zo(t, e) ? [t] : kr(Lr(t));
+}
+var Or = 1 / 0;
+function be(t) {
+  if (typeof t == "string" || J(t))
+    return t;
+  var e = t + "";
+  return e == "0" && 1 / t == -Or ? "-0" : e;
+}
+function ve(t, e) {
+  e = mt(e, t);
+  for (var n = 0, o = e.length; t != null && n < o; )
+    t = t[be(e[n++])];
+  return n && n == o ? t : void 0;
+}
+function Me(t, e, n) {
+  var o = t == null ? void 0 : ve(t, e);
+  return o === void 0 ? n : o;
+}
+function xt(t, e) {
+  for (var n = -1, o = e.length, r = t.length; ++n < o; )
+    t[r + n] = e[n];
+  return t;
+}
+var Bt = $ ? $.isConcatSpreadable : void 0;
+function Ar(t) {
+  return R(t) || de(t) || !!(Bt && t && t[Bt]);
+}
+function Ee(t, e, n, o, r) {
+  var i = -1, s = t.length;
+  for (n || (n = Ar), r || (r = []); ++i < s; ) {
+    var l = t[i];
+    e > 0 && n(l) ? e > 1 ? Ee(l, e - 1, n, o, r) : xt(r, l) : o || (r[r.length] = l);
+  }
+  return r;
+}
+function jr(t) {
+  var e = t == null ? 0 : t.length;
+  return e ? Ee(t, 1) : [];
+}
+function Sr(t) {
+  return ae(ue(t, void 0, jr), t + "");
+}
+var Ir = xe(Object.getPrototypeOf, Object);
+const bt = Ir;
+var Dr = "[object Object]", Rr = Function.prototype, Br = Object.prototype, Ce = Rr.toString, Fr = Br.hasOwnProperty, Nr = Ce.call(Object);
+function Ur(t) {
+  if (!D(t) || I(t) != Dr)
+    return !1;
+  var e = bt(t);
+  if (e === null)
+    return !0;
+  var n = Fr.call(e, "constructor") && e.constructor;
+  return typeof n == "function" && n instanceof n && Ce.call(n) == Nr;
+}
+function Gr(t, e, n) {
+  var o = -1, r = t.length;
+  e < 0 && (e = -e > r ? 0 : r + e), n = n > r ? r : n, n < 0 && (n += r), r = e > n ? 0 : n - e >>> 0, e >>>= 0;
+  for (var i = Array(r); ++o < r; )
+    i[o] = t[o + e];
+  return i;
+}
+function zr() {
+  this.__data__ = new _(), this.size = 0;
+}
+function Hr(t) {
+  var e = this.__data__, n = e.delete(t);
+  return this.size = e.size, n;
+}
+function Wr(t) {
+  return this.__data__.get(t);
+}
+function Kr(t) {
+  return this.__data__.has(t);
+}
+var Vr = 200;
+function Yr(t, e) {
+  var n = this.__data__;
+  if (n instanceof _) {
+    var o = n.__data__;
+    if (!Y || o.length < Vr - 1)
+      return o.push([t, e]), this.size = ++n.size, this;
+    n = this.__data__ = new L(o);
+  }
+  return n.set(t, e), this.size = n.size, this;
+}
+function z(t) {
+  var e = this.__data__ = new _(t);
   this.size = e.size;
 }
-L.prototype.clear = Po;
-L.prototype.delete = mo;
-L.prototype.get = Mo;
-L.prototype.has = vo;
-L.prototype.set = xo;
-function Eo(t, e) {
-  return t && B(e, tt(e), t);
+z.prototype.clear = zr;
+z.prototype.delete = Hr;
+z.prototype.get = Wr;
+z.prototype.has = Kr;
+z.prototype.set = Yr;
+function Xr(t, e) {
+  return t && X(e, yt(e), t);
 }
-function $o(t, e) {
-  return t && B(e, et(e), t);
+function Zr(t, e) {
+  return t && X(e, Tt(e), t);
 }
-var le = typeof exports == "object" && exports && !exports.nodeType && exports, Et = le && typeof module == "object" && module && !module.nodeType && module, wo = Et && Et.exports === le, $t = wo ? d.Buffer : void 0, wt = $t ? $t.allocUnsafe : void 0;
-function _o(t, e) {
+var $e = typeof exports == "object" && exports && !exports.nodeType && exports, Ft = $e && typeof module == "object" && module && !module.nodeType && module, qr = Ft && Ft.exports === $e, Nt = qr ? C.Buffer : void 0, Ut = Nt ? Nt.allocUnsafe : void 0;
+function Jr(t, e) {
   if (e)
     return t.slice();
-  var r = t.length, n = wt ? wt(r) : new t.constructor(r);
-  return t.copy(n), n;
+  var n = t.length, o = Ut ? Ut(n) : new t.constructor(n);
+  return t.copy(o), o;
 }
-function Co(t, e) {
-  for (var r = -1, n = t == null ? 0 : t.length, o = 0, i = []; ++r < n; ) {
-    var a = t[r];
-    e(a, r, t) && (i[o++] = a);
+function Qr(t, e) {
+  for (var n = -1, o = t == null ? 0 : t.length, r = 0, i = []; ++n < o; ) {
+    var s = t[n];
+    e(s, n, t) && (i[r++] = s);
   }
   return i;
 }
-function ce() {
+function we() {
   return [];
 }
-var jo = Object.prototype, Ao = jo.propertyIsEnumerable, _t = Object.getOwnPropertySymbols, Oo = _t ? function(t) {
-  return t == null ? [] : (t = Object(t), Co(_t(t), function(e) {
-    return Ao.call(t, e);
+var ti = Object.prototype, ei = ti.propertyIsEnumerable, Gt = Object.getOwnPropertySymbols, ni = Gt ? function(t) {
+  return t == null ? [] : (t = Object(t), Qr(Gt(t), function(e) {
+    return ei.call(t, e);
   }));
-} : ce;
-const st = Oo;
-function Lo(t, e) {
-  return B(t, st(t), e);
+} : we;
+const vt = ni;
+function oi(t, e) {
+  return X(t, vt(t), e);
 }
-var So = Object.getOwnPropertySymbols, Io = So ? function(t) {
+var ri = Object.getOwnPropertySymbols, ii = ri ? function(t) {
   for (var e = []; t; )
-    ot(e, st(t)), t = it(t);
+    xt(e, vt(t)), t = bt(t);
   return e;
-} : ce;
-const he = Io;
-function ko(t, e) {
-  return B(t, he(t), e);
+} : we;
+const _e = ii;
+function si(t, e) {
+  return X(t, _e(t), e);
 }
-function ue(t, e, r) {
-  var n = e(t);
-  return $(t) ? n : ot(n, r(t));
+function ke(t, e, n) {
+  var o = e(t);
+  return R(t) ? o : xt(o, n(t));
 }
-function Do(t) {
-  return ue(t, tt, st);
+function ai(t) {
+  return ke(t, yt, vt);
 }
-function ge(t) {
-  return ue(t, et, he);
+function Le(t) {
+  return ke(t, Tt, _e);
 }
-var Fo = _(d, "DataView");
-const W = Fo;
-var Bo = _(d, "Promise");
-const Y = Bo;
-var Uo = _(d, "Set");
-const X = Uo;
-var Ct = "[object Map]", Ro = "[object Object]", jt = "[object Promise]", At = "[object Set]", Ot = "[object WeakMap]", Lt = "[object DataView]", Go = w(W), zo = w(D), No = w(Y), Ko = w(X), Ho = w(V), v = x;
-(W && v(new W(new ArrayBuffer(1))) != Lt || D && v(new D()) != Ct || Y && v(Y.resolve()) != jt || X && v(new X()) != At || V && v(new V()) != Ot) && (v = function(t) {
-  var e = x(t), r = e == Ro ? t.constructor : void 0, n = r ? w(r) : "";
-  if (n)
-    switch (n) {
-      case Go:
-        return Lt;
-      case zo:
-        return Ct;
-      case No:
-        return jt;
-      case Ko:
-        return At;
-      case Ho:
-        return Ot;
+var li = F(C, "DataView");
+const ct = li;
+var hi = F(C, "Promise");
+const ut = hi;
+var ci = F(C, "Set");
+const gt = ci;
+var zt = "[object Map]", ui = "[object Object]", Ht = "[object Promise]", Wt = "[object Set]", Kt = "[object WeakMap]", Vt = "[object DataView]", gi = B(ct), pi = B(Y), fi = B(ut), di = B(gt), yi = B(ht), j = I;
+(ct && j(new ct(new ArrayBuffer(1))) != Vt || Y && j(new Y()) != zt || ut && j(ut.resolve()) != Ht || gt && j(new gt()) != Wt || ht && j(new ht()) != Kt) && (j = function(t) {
+  var e = I(t), n = e == ui ? t.constructor : void 0, o = n ? B(n) : "";
+  if (o)
+    switch (o) {
+      case gi:
+        return Vt;
+      case pi:
+        return zt;
+      case fi:
+        return Ht;
+      case di:
+        return Wt;
+      case yi:
+        return Kt;
     }
   return e;
 });
-const at = v;
-var Vo = Object.prototype, Wo = Vo.hasOwnProperty;
-function Yo(t) {
-  var e = t.length, r = new t.constructor(e);
-  return e && typeof t[0] == "string" && Wo.call(t, "index") && (r.index = t.index, r.input = t.input), r;
+const Mt = j;
+var Ti = Object.prototype, Pi = Ti.hasOwnProperty;
+function mi(t) {
+  var e = t.length, n = new t.constructor(e);
+  return e && typeof t[0] == "string" && Pi.call(t, "index") && (n.index = t.index, n.input = t.input), n;
 }
-var Xo = d.Uint8Array;
-const St = Xo;
-function lt(t) {
+var xi = C.Uint8Array;
+const Yt = xi;
+function Et(t) {
   var e = new t.constructor(t.byteLength);
-  return new St(e).set(new St(t)), e;
+  return new Yt(e).set(new Yt(t)), e;
 }
-function qo(t, e) {
-  var r = e ? lt(t.buffer) : t.buffer;
-  return new t.constructor(r, t.byteOffset, t.byteLength);
+function bi(t, e) {
+  var n = e ? Et(t.buffer) : t.buffer;
+  return new t.constructor(n, t.byteOffset, t.byteLength);
 }
-var Zo = /\w*$/;
-function Jo(t) {
-  var e = new t.constructor(t.source, Zo.exec(t));
+var vi = /\w*$/;
+function Mi(t) {
+  var e = new t.constructor(t.source, vi.exec(t));
   return e.lastIndex = t.lastIndex, e;
 }
-var It = p ? p.prototype : void 0, kt = It ? It.valueOf : void 0;
-function Qo(t) {
-  return kt ? Object(kt.call(t)) : {};
+var Xt = $ ? $.prototype : void 0, Zt = Xt ? Xt.valueOf : void 0;
+function Ei(t) {
+  return Zt ? Object(Zt.call(t)) : {};
 }
-function ti(t, e) {
-  var r = e ? lt(t.buffer) : t.buffer;
-  return new t.constructor(r, t.byteOffset, t.length);
+function Ci(t, e) {
+  var n = e ? Et(t.buffer) : t.buffer;
+  return new t.constructor(n, t.byteOffset, t.length);
 }
-var ei = "[object Boolean]", ri = "[object Date]", ni = "[object Map]", oi = "[object Number]", ii = "[object RegExp]", si = "[object Set]", ai = "[object String]", li = "[object Symbol]", ci = "[object ArrayBuffer]", hi = "[object DataView]", ui = "[object Float32Array]", gi = "[object Float64Array]", fi = "[object Int8Array]", pi = "[object Int16Array]", di = "[object Int32Array]", yi = "[object Uint8Array]", Ti = "[object Uint8ClampedArray]", Pi = "[object Uint16Array]", mi = "[object Uint32Array]";
-function Mi(t, e, r) {
-  var n = t.constructor;
+var $i = "[object Boolean]", wi = "[object Date]", _i = "[object Map]", ki = "[object Number]", Li = "[object RegExp]", Oi = "[object Set]", Ai = "[object String]", ji = "[object Symbol]", Si = "[object ArrayBuffer]", Ii = "[object DataView]", Di = "[object Float32Array]", Ri = "[object Float64Array]", Bi = "[object Int8Array]", Fi = "[object Int16Array]", Ni = "[object Int32Array]", Ui = "[object Uint8Array]", Gi = "[object Uint8ClampedArray]", zi = "[object Uint16Array]", Hi = "[object Uint32Array]";
+function Wi(t, e, n) {
+  var o = t.constructor;
   switch (e) {
-    case ci:
-      return lt(t);
-    case ei:
-    case ri:
-      return new n(+t);
-    case hi:
-      return qo(t, r);
-    case ui:
-    case gi:
-    case fi:
-    case pi:
-    case di:
-    case yi:
-    case Ti:
-    case Pi:
-    case mi:
-      return ti(t, r);
-    case ni:
-      return new n();
-    case oi:
-    case ai:
-      return new n(t);
-    case ii:
-      return Jo(t);
-    case si:
-      return new n();
-    case li:
-      return Qo(t);
+    case Si:
+      return Et(t);
+    case $i:
+    case wi:
+      return new o(+t);
+    case Ii:
+      return bi(t, n);
+    case Di:
+    case Ri:
+    case Bi:
+    case Fi:
+    case Ni:
+    case Ui:
+    case Gi:
+    case zi:
+    case Hi:
+      return Ci(t, n);
+    case _i:
+      return new o();
+    case ki:
+    case Ai:
+      return new o(t);
+    case Li:
+      return Mi(t);
+    case Oi:
+      return new o();
+    case ji:
+      return Ei(t);
   }
 }
-function vi(t) {
-  return typeof t.constructor == "function" && !J(t) ? or(it(t)) : {};
+function Ki(t) {
+  return typeof t.constructor == "function" && !ft(t) ? On(bt(t)) : {};
 }
-var bi = "[object Map]";
-function xi(t) {
-  return E(t) && at(t) == bi;
+var Vi = "[object Map]";
+function Yi(t) {
+  return D(t) && Mt(t) == Vi;
 }
-var Dt = O && O.isMap, Ei = Dt ? Q(Dt) : xi;
-const $i = Ei;
-var wi = "[object Set]";
-function _i(t) {
-  return E(t) && at(t) == wi;
+var qt = G && G.isMap, Xi = qt ? dt(qt) : Yi;
+const Zi = Xi;
+var qi = "[object Set]";
+function Ji(t) {
+  return D(t) && Mt(t) == qi;
 }
-var Ft = O && O.isSet, Ci = Ft ? Q(Ft) : _i;
-const ji = Ci;
-var Ai = 1, Oi = 2, Li = 4, fe = "[object Arguments]", Si = "[object Array]", Ii = "[object Boolean]", ki = "[object Date]", Di = "[object Error]", pe = "[object Function]", Fi = "[object GeneratorFunction]", Bi = "[object Map]", Ui = "[object Number]", de = "[object Object]", Ri = "[object RegExp]", Gi = "[object Set]", zi = "[object String]", Ni = "[object Symbol]", Ki = "[object WeakMap]", Hi = "[object ArrayBuffer]", Vi = "[object DataView]", Wi = "[object Float32Array]", Yi = "[object Float64Array]", Xi = "[object Int8Array]", qi = "[object Int16Array]", Zi = "[object Int32Array]", Ji = "[object Uint8Array]", Qi = "[object Uint8ClampedArray]", ts = "[object Uint16Array]", es = "[object Uint32Array]", c = {};
-c[fe] = c[Si] = c[Hi] = c[Vi] = c[Ii] = c[ki] = c[Wi] = c[Yi] = c[Xi] = c[qi] = c[Zi] = c[Bi] = c[Ui] = c[de] = c[Ri] = c[Gi] = c[zi] = c[Ni] = c[Ji] = c[Qi] = c[ts] = c[es] = !0;
-c[Di] = c[pe] = c[Ki] = !1;
-function U(t, e, r, n, o, i) {
-  var a, l = e & Ai, u = e & Oi, g = e & Li;
-  if (r && (a = o ? r(t, n, o, i) : r(t)), a !== void 0)
-    return a;
-  if (!F(t))
+var Jt = G && G.isSet, Qi = Jt ? dt(Jt) : Ji;
+const ts = Qi;
+var es = 1, ns = 2, os = 4, Oe = "[object Arguments]", rs = "[object Array]", is = "[object Boolean]", ss = "[object Date]", as = "[object Error]", Ae = "[object Function]", ls = "[object GeneratorFunction]", hs = "[object Map]", cs = "[object Number]", je = "[object Object]", us = "[object RegExp]", gs = "[object Set]", ps = "[object String]", fs = "[object Symbol]", ds = "[object WeakMap]", ys = "[object ArrayBuffer]", Ts = "[object DataView]", Ps = "[object Float32Array]", ms = "[object Float64Array]", xs = "[object Int8Array]", bs = "[object Int16Array]", vs = "[object Int32Array]", Ms = "[object Uint8Array]", Es = "[object Uint8ClampedArray]", Cs = "[object Uint16Array]", $s = "[object Uint32Array]", u = {};
+u[Oe] = u[rs] = u[ys] = u[Ts] = u[is] = u[ss] = u[Ps] = u[ms] = u[xs] = u[bs] = u[vs] = u[hs] = u[cs] = u[je] = u[us] = u[gs] = u[ps] = u[fs] = u[Ms] = u[Es] = u[Cs] = u[$s] = !0;
+u[as] = u[Ae] = u[ds] = !1;
+function Z(t, e, n, o, r, i) {
+  var s, l = e & es, h = e & ns, c = e & os;
+  if (n && (s = r ? n(t, o, r, i) : n(t)), s !== void 0)
+    return s;
+  if (!w(t))
     return t;
-  var f = $(t);
+  var f = R(t);
   if (f) {
-    if (a = Yo(t), !l)
-      return sr(t, a);
+    if (s = mi(t), !l)
+      return jn(t, s);
   } else {
-    var C = at(t), ct = C == pe || C == Fi;
-    if (Qt(t))
-      return _o(t, l);
-    if (C == de || C == fe || ct && !o) {
-      if (a = u || ct ? {} : vi(t), !l)
-        return u ? ko(t, $o(a, t)) : Lo(t, Eo(a, t));
+    var T = Mt(t), d = T == Ae || T == ls;
+    if (Te(t))
+      return Jr(t, l);
+    if (T == je || T == Oe || d && !r) {
+      if (s = h || d ? {} : Ki(t), !l)
+        return h ? si(t, Zr(s, t)) : oi(t, Xr(s, t));
     } else {
-      if (!c[C])
-        return o ? t : {};
-      a = Mi(t, C, l);
+      if (!u[T])
+        return r ? t : {};
+      s = Wi(t, T, l);
     }
   }
-  i || (i = new L());
-  var ht = i.get(t);
-  if (ht)
-    return ht;
-  i.set(t, a), ji(t) ? t.forEach(function(T) {
-    a.add(U(T, e, r, T, t, i));
-  }) : $i(t) && t.forEach(function(T, M) {
-    a.set(M, U(T, e, r, M, t, i));
+  i || (i = new z());
+  var p = i.get(t);
+  if (p)
+    return p;
+  i.set(t, s), ts(t) ? t.forEach(function(P) {
+    s.add(Z(P, e, n, P, t, i));
+  }) : Zi(t) && t.forEach(function(P, m) {
+    s.set(m, Z(P, e, n, m, t, i));
   });
-  var Te = g ? u ? ge : Do : u ? et : tt, ut = f ? void 0 : Te(t);
-  return Tr(ut || t, function(T, M) {
-    ut && (M = T, T = t[M]), Wt(a, M, U(T, e, r, M, t, i));
-  }), a;
+  var M = c ? h ? Le : ai : h ? Tt : yt, v = f ? void 0 : M(t);
+  return zn(v || t, function(P, m) {
+    v && (m = P, P = t[m]), ce(s, m, Z(P, e, n, m, t, i));
+  }), s;
 }
-function rs(t) {
+var ws = function() {
+  return C.Date.now();
+};
+const it = ws;
+var _s = "Expected a function", ks = Math.max, Ls = Math.min;
+function Os(t, e, n) {
+  var o, r, i, s, l, h, c = 0, f = !1, T = !1, d = !0;
+  if (typeof t != "function")
+    throw new TypeError(_s);
+  e = lt(e) || 0, w(n) && (f = !!n.leading, T = "maxWait" in n, i = T ? ks(lt(n.maxWait) || 0, e) : i, d = "trailing" in n ? !!n.trailing : d);
+  function p(y) {
+    var k = o, H = r;
+    return o = r = void 0, c = y, s = t.apply(H, k), s;
+  }
+  function M(y) {
+    return c = y, l = setTimeout(m, e), f ? p(y) : s;
+  }
+  function v(y) {
+    var k = y - h, H = y - c, Ct = e - k;
+    return T ? Ls(Ct, i - H) : Ct;
+  }
+  function P(y) {
+    var k = y - h, H = y - c;
+    return h === void 0 || k >= e || k < 0 || T && H >= i;
+  }
+  function m() {
+    var y = it();
+    if (P(y))
+      return x(y);
+    l = setTimeout(m, v(y));
+  }
+  function x(y) {
+    return l = void 0, d && o ? p(y) : (o = r = void 0, s);
+  }
+  function O() {
+    l !== void 0 && clearTimeout(l), c = 0, o = h = r = l = void 0;
+  }
+  function b() {
+    return l === void 0 ? s : x(it());
+  }
+  function A() {
+    var y = it(), k = P(y);
+    if (o = arguments, r = this, h = y, k) {
+      if (l === void 0)
+        return M(h);
+      if (T)
+        return clearTimeout(l), l = setTimeout(m, e), p(h);
+    }
+    return l === void 0 && (l = setTimeout(m, e)), s;
+  }
+  return A.cancel = O, A.flush = b, A;
+}
+var As = "Expected a function";
+function js(t, e, n) {
+  if (typeof t != "function")
+    throw new TypeError(As);
+  return setTimeout(function() {
+    t.apply(void 0, n);
+  }, e);
+}
+var Ss = Xn(function(t, e, n) {
+  return js(t, lt(e) || 0, n);
+});
+const st = Ss;
+function Is(t) {
   var e = t == null ? 0 : t.length;
   return e ? t[e - 1] : void 0;
 }
-function ns(t, e) {
-  return e.length < 2 ? t : oe(t, To(e, 0, -1));
+function Ds(t, e) {
+  return e.length < 2 ? t : ve(t, Gr(e, 0, -1));
 }
-function os(t, e) {
-  return e = nt(e, t), t = ns(t, e), t == null || delete t[ne(rs(e))];
+function Rs(t, e) {
+  return e = mt(e, t), t = Ds(t, e), t == null || delete t[be(Is(e))];
 }
-function is(t) {
-  return yo(t) ? void 0 : t;
+function Bs(t) {
+  return Ur(t) ? void 0 : t;
 }
-var ss = 1, as = 2, ls = 4, cs = lo(function(t, e) {
-  var r = {};
+var Fs = 1, Ns = 2, Us = 4, Gs = Sr(function(t, e) {
+  var n = {};
   if (t == null)
-    return r;
-  var n = !1;
-  e = zt(e, function(i) {
-    return i = nt(i, t), n || (n = i.length > 1), i;
-  }), B(t, ge(t), r), n && (r = U(r, ss | as | ls, is));
-  for (var o = e.length; o--; )
-    os(r, e[o]);
-  return r;
+    return n;
+  var o = !1;
+  e = oe(e, function(i) {
+    return i = mt(i, t), o || (o = i.length > 1), i;
+  }), X(t, Le(t), n), o && (n = Z(n, Fs | Ns | Us, Bs));
+  for (var r = e.length; r--; )
+    Rs(n, e[r]);
+  return n;
 });
-const hs = cs, Bt = {
+const zs = Gs;
+var Hs = "Expected a function";
+function Ws(t, e, n) {
+  var o = !0, r = !0;
+  if (typeof t != "function")
+    throw new TypeError(Hs);
+  return w(n) && (o = "leading" in n ? !!n.leading : o, r = "trailing" in n ? !!n.trailing : r), Os(t, e, {
+    leading: o,
+    maxWait: e,
+    trailing: r
+  });
+}
+const Qt = {
   radius: 6,
   zIndex: 0,
   strokeOpacity: 0,
   fillOpacity: 0
 };
-class q {
+class pt {
   constructor(e) {
-    s(this, "map");
-    s(this, "options", P({}, Bt));
-    s(this, "circleMarkers", []);
+    a(this, "map");
+    a(this, "options", E({}, Qt));
+    a(this, "circleMarkers", []);
     this.map = e;
   }
   setOptions(e) {
-    return this.options = P(P({}, e), hs(Bt, "radius")), this;
+    return this.options = E(E({}, e), zs(Qt, "radius")), this;
   }
   createCircleMarkersByPaths(e) {
-    this.removeFromTheMap(), this.reset(), e.forEach((r) => {
-      this.circleMarkers.push(this.createCircleMarker(r));
+    this.removeFromTheMap(), this.reset(), e.forEach((n) => {
+      this.circleMarkers.push(this.createCircleMarker(n));
     }), this.addToMap();
   }
   createCircleMarker(e) {
-    return new AMap.CircleMarker(P({ center: e }, this.options));
+    return new AMap.CircleMarker(E({ center: e }, this.options));
   }
   addToMap() {
     this.map.add(this.circleMarkers);
@@ -928,8 +1034,8 @@ class q {
    * @returns
    */
   getPointInCircleMarkers(e) {
-    var r;
-    return (r = this.circleMarkers.find((n) => this.isPointInCircle(e, n))) != null ? r : null;
+    var n;
+    return (n = this.circleMarkers.find((o) => this.isPointInCircle(e, o))) != null ? n : null;
   }
   /**
    * 获取点是否在围栏编辑器的蓝色操作点上（即中间点）
@@ -937,11 +1043,11 @@ class q {
    * @returns
    */
   getInCircleMarkersPoint(e) {
-    const r = this.circleMarkers.find((o) => this.isPointInCircle(e, o));
-    return this.circleMarkers.findIndex((o) => o === r) % 2 === 0 ? null : r != null ? r : null;
+    const n = this.circleMarkers.find((r) => this.isPointInCircle(e, r));
+    return this.circleMarkers.findIndex((r) => r === n) % 2 === 0 ? null : n != null ? n : null;
   }
-  isPointInCircle(e, r) {
-    return r.contains(e);
+  isPointInCircle(e, n) {
+    return n.contains(e);
   }
   reset() {
     this.circleMarkers = [];
@@ -950,27 +1056,27 @@ class q {
     this.removeFromTheMap(), this.reset();
   }
 }
-const Ut = {
+const te = {
   zIndex: 1,
   strokeColor: "#00D3FC",
   strokeWeight: 8,
   strokeOpacity: 0
 };
-class ye {
+class Se {
   constructor(e) {
-    s(this, "map");
-    s(this, "linesPath", []);
-    s(this, "lines", []);
+    a(this, "map");
+    a(this, "linesPath", []);
+    a(this, "lines", []);
     if (!e)
       throw new Error("map not found");
     this.map = e;
   }
   getLinesByPaths(e) {
-    let r = 0;
-    const n = e.length;
-    for (; r < n; ) {
-      const o = r + 1 >= n ? 0 : r + 1;
-      this.linesPath.push([e[r], e[o]]), r++;
+    let n = 0;
+    const o = e.length;
+    for (; n < o; ) {
+      const r = n + 1 >= o ? 0 : n + 1;
+      this.linesPath.push([e[n], e[r]]), n++;
     }
     return this.linesPath;
   }
@@ -978,7 +1084,7 @@ class ye {
     this.reset(), this.getLinesByPaths(e);
   }
   createPolyLine(e) {
-    return new AMap.Polyline(P({ path: e }, Ut));
+    return new AMap.Polyline(E({ path: e }, te));
   }
   addToMap() {
     this.map.add(this.lines);
@@ -987,116 +1093,116 @@ class ye {
     this.map.remove(this.lines);
   }
   getPointInPolyline(e) {
-    const r = this.map.getResolution(), n = Ut.strokeWeight * r;
+    const n = this.map.getResolution(), o = te.strokeWeight * n;
     return this.linesPath.find(
-      (i) => AMap.GeometryUtil.isPointOnSegment(e, i[0], i[1], n)
+      (i) => AMap.GeometryUtil.isPointOnSegment(e, i[0], i[1], o)
     );
   }
   reset() {
     this.linesPath = [], this.lines = [];
   }
 }
-class us {
-  constructor(e, r) {
-    s(this, "map");
+class Ks {
+  constructor(e, n) {
+    a(this, "map");
     // 实点
-    s(this, "circleMarkers", null);
+    a(this, "circleMarkers", null);
     // 中间点
-    s(this, "midCircleMarkers", null);
+    a(this, "midCircleMarkers", null);
     // 线集合
-    s(this, "lines", null);
+    a(this, "lines", null);
     // 编辑器
-    s(this, "polygonEditor", null);
+    a(this, "polygonEditor", null);
     // 多边形路径
-    s(this, "polygonPaths", []);
+    a(this, "polygonPaths", []);
     // 多边形全部路径（包括中间虚电）
-    s(this, "polygonTotalPaths", []);
+    a(this, "polygonTotalPaths", []);
     // 多边形
-    s(this, "polygon", null);
+    a(this, "polygon", null);
     // 开始点位到鼠标位置的文本
-    s(this, "startPointToCursorText", null);
+    a(this, "startPointToCursorText", null);
     // 最后一次点位到鼠标位置的文本
-    s(this, "lastPointToCursorText", null);
+    a(this, "lastPointToCursorText", null);
     // 线长的文本呢
-    s(this, "lineLengthText", null);
+    a(this, "lineLengthText", null);
     // 操作点
-    s(this, "circleMarker", null);
+    a(this, "circleMarker", null);
     // 操作中间点
-    s(this, "midCircleMarker", null);
+    a(this, "midCircleMarker", null);
     // 起始点位
-    s(this, "startPosition", null);
+    a(this, "startPosition", null);
     // 上次点击点位
-    s(this, "lastPosition", null);
+    a(this, "lastPosition", null);
     // 兜底设置编辑中间点标记列表路径
-    s(this, "editingMidTipMarkerListPath", null);
-    s(this, "onPolygonEditorAdjust", ({ target: e }) => {
+    a(this, "editingMidTipMarkerListPath", null);
+    a(this, "onPolygonEditorAdjust", ({ target: e }) => {
       this.polygonPaths = e.getPath(), this.circleMarkers.createCircleMarkersByPaths(this.polygonPaths), this.lines.createLinesByPaths(this.polygonPaths), Promise.resolve().then(() => {
         this.polygonTotalPaths = this.getPolygonEditorTargetTotalPaths(), this.midCircleMarkers.createCircleMarkersByPaths(this.polygonTotalPaths);
       }), this.reset();
     });
-    s(this, "onMouseDown", (e) => {
-      const r = e.lnglat;
-      this.circleMarker = this.circleMarkers.getPointInCircleMarkers(r), this.midCircleMarker = this.midCircleMarkers.getInCircleMarkersPoint(r);
+    a(this, "onMouseDown", (e) => {
+      const n = e.lnglat;
+      this.circleMarker = this.circleMarkers.getPointInCircleMarkers(n), this.midCircleMarker = this.midCircleMarkers.getInCircleMarkersPoint(n);
     });
-    s(this, "onMovePolygonEditorPoint", (e) => {
+    a(this, "onMovePolygonEditorPoint", (e) => {
       if (this.midCircleMarker)
         return;
       if (!this.circleMarker) {
         this.reset();
         return;
       }
-      const r = this.circleMarker.getCenter(), n = (f) => `${f.lng}-${f.lat}`;
-      let o = this.polygonPaths.findIndex((f) => n(f) === n(r));
-      if (o === -1)
+      const n = this.circleMarker.getCenter(), o = (f) => `${f.lng}-${f.lat}`;
+      let r = this.polygonPaths.findIndex((f) => o(f) === o(n));
+      if (r === -1)
         return;
-      const i = this.polygonPaths.length, a = o - 1 <= -1 ? i - 1 : o - 1, l = o + 1 >= i ? 0 : o + 1, u = this.polygonPaths.at(a), g = this.polygonPaths.at(l);
-      this.setPosition(u, g), this.onMouseMoveInDrawPolygon(e);
+      const i = this.polygonPaths.length, s = r - 1 <= -1 ? i - 1 : r - 1, l = r + 1 >= i ? 0 : r + 1, h = this.polygonPaths.at(s), c = this.polygonPaths.at(l);
+      this.setPosition(h, c), this.onMouseMoveInDrawPolygon(e);
     });
-    s(this, "onMovePolygonEditorMidPoint", (e) => {
+    a(this, "onMovePolygonEditorMidPoint", (e) => {
       if (this.circleMarker)
         return;
       if (!this.midCircleMarker) {
         this.reset();
         return;
       }
-      const r = this.midCircleMarker.getCenter(), n = (f) => `${f.lng}-${f.lat}`;
-      let o = this.polygonTotalPaths.findIndex((f) => n(f) === n(r));
-      if (o === -1)
+      const n = this.midCircleMarker.getCenter(), o = (f) => `${f.lng}-${f.lat}`;
+      let r = this.polygonTotalPaths.findIndex((f) => o(f) === o(n));
+      if (r === -1)
         return;
-      const i = this.polygonTotalPaths.length, a = o - 1 <= -1 ? i - 1 : o - 1, l = o + 1 >= i ? 0 : o + 1, u = this.polygonTotalPaths.at(a), g = this.polygonTotalPaths.at(l);
-      this.setPosition(u, g), this.onMouseMoveInDrawPolygon(e);
+      const i = this.polygonTotalPaths.length, s = r - 1 <= -1 ? i - 1 : r - 1, l = r + 1 >= i ? 0 : r + 1, h = this.polygonTotalPaths.at(s), c = this.polygonTotalPaths.at(l);
+      this.setPosition(h, c), this.onMouseMoveInDrawPolygon(e);
     });
-    s(this, "onMouseUp", () => {
+    a(this, "onMouseUp", () => {
       this.circleMarker = null, this.midCircleMarker = null, this.reset();
     });
-    s(this, "onInPolygonEditorLine", (e) => {
+    a(this, "onInPolygonEditorLine", (e) => {
       if (this.circleMarker)
         return this.removeLineDistanceText();
-      const r = e.lnglat, n = this.lines.getPointInPolyline(r);
-      if (!n)
+      const n = e.lnglat, o = this.lines.getPointInPolyline(n);
+      if (!o)
         return this.removeLineDistanceText();
-      const [o, i] = n;
-      this.lineLengthText || (this.lineLengthText = j(), this.lineLengthText.add(this.map)), this.updateDistanceText(this.lineLengthText, A(o, i));
+      const [r, i] = o;
+      this.lineLengthText || (this.lineLengthText = N(), this.lineLengthText.add(this.map)), this.updateDistanceText(this.lineLengthText, U(r, i));
     });
     /**
      * 获取新增围栏时，鼠标移动位置
      * @param {*} event
      */
-    s(this, "onMouseMoveInDrawPolygon", (e) => {
+    a(this, "onMouseMoveInDrawPolygon", (e) => {
       if (!this.startPosition || !this.lastPosition)
         return;
-      const r = e.lnglat;
+      const n = e.lnglat;
       this.updateDistanceText(
         this.startPointToCursorText,
-        A(this.startPosition, r)
+        U(this.startPosition, n)
       ), this.updateDistanceText(
         this.lastPointToCursorText,
-        A(this.lastPosition, r)
+        U(this.lastPosition, n)
       );
     });
     if (!e)
       throw new Error("map not found!");
-    this.map = e, r && (this.polygonEditor = r), this.circleMarkers = new q(this.map), this.midCircleMarkers = new q(this.map), this.lines = new ye(this.map);
+    this.map = e, n && (this.polygonEditor = n), this.circleMarkers = new pt(this.map), this.midCircleMarkers = new pt(this.map), this.lines = new Se(this.map);
   }
   /**
    * 获取编辑器目标多边形路径
@@ -1117,48 +1223,48 @@ class us {
    * @returns 
    */
   getEditingMidTipMarkerList() {
-    var r, n;
+    var n, o;
     const { singleRingListHandle: e } = this.polygonEditor;
     if (this.editingMidTipMarkerListPath) {
       if (typeof this.editingMidTipMarkerListPath == "function")
         return this.editingMidTipMarkerListPath(this.polygonEditor);
       if (typeof this.editingMidTipMarkerListPath == "string")
-        return ie(this.polygonEditor, this.editingMidTipMarkerListPath);
+        return Me(this.polygonEditor, this.editingMidTipMarkerListPath);
     }
-    return (r = this.polygonEditor.editingMidTipMarkerList) != null && r.length ? this.polygonEditor.editingMidTipMarkerList : e ? (n = e == null ? void 0 : e.list) == null ? void 0 : n.editingMidTipMarkerList : [];
+    return (n = this.polygonEditor.editingMidTipMarkerList) != null && n.length ? this.polygonEditor.editingMidTipMarkerList : e ? (o = e == null ? void 0 : e.list) == null ? void 0 : o.editingMidTipMarkerList : [];
   }
   /**
    * 获取编辑围栏所有点位（白色操作点+蓝色中间操作点）
    * @returns
    */
   getPolygonEditorTargetTotalPaths() {
-    const e = this.getPolygonEditorTargetPaths(), r = this.getEditingMidTipMarkerList();
-    let n = 0;
-    const o = [], i = e.length;
-    for (; n < i; ) {
-      o.push(e[n]);
-      const a = r[n];
-      a && o.push(a.getCenter()), n++;
+    const e = this.getPolygonEditorTargetPaths(), n = this.getEditingMidTipMarkerList();
+    let o = 0;
+    const r = [], i = e.length;
+    for (; o < i; ) {
+      r.push(e[o]);
+      const s = n[o];
+      s && r.push(s.getCenter()), o++;
     }
-    return o;
+    return r;
   }
   /**
    * 注册多边形编辑器，可操作点位事件
    */
   start(e) {
-    var o, i, a;
+    var r, i, s;
     if (!e && !this.polygonEditor)
       throw new Error("polygonEditor not found");
     this.polygonEditor = e;
-    const { controlPoint: r, midControlPoint: n } = this.polygonEditor;
-    return this.polygonPaths = this.getPolygonEditorTargetPaths(), this.circleMarkers.setOptions(r).createCircleMarkersByPaths(this.polygonPaths), this.polygonTotalPaths = this.getPolygonEditorTargetTotalPaths(), this.midCircleMarkers.setOptions(n).createCircleMarkersByPaths(this.polygonTotalPaths), this.lines.createLinesByPaths(this.polygonPaths), (o = this.polygonEditor) == null || o.on("adjust", this.onPolygonEditorAdjust), (i = this.polygonEditor) == null || i.on("removenode", this.onPolygonEditorAdjust), (a = this.polygonEditor) == null || a.on("addnode", this.onPolygonEditorAdjust), this.map.on("mousedown", this.onMouseDown), this.map.on("mousemove", this.onMovePolygonEditorPoint), this.map.on("mousemove", this.onMovePolygonEditorMidPoint), this.map.on("mousemove", this.onInPolygonEditorLine), this.map.on("mouseup", this.onMouseUp), this;
+    const { controlPoint: n, midControlPoint: o } = this.polygonEditor;
+    return this.polygonPaths = this.getPolygonEditorTargetPaths(), this.circleMarkers.setOptions(n).createCircleMarkersByPaths(this.polygonPaths), this.polygonTotalPaths = this.getPolygonEditorTargetTotalPaths(), this.midCircleMarkers.setOptions(o).createCircleMarkersByPaths(this.polygonTotalPaths), this.lines.createLinesByPaths(this.polygonPaths), (r = this.polygonEditor) == null || r.on("adjust", this.onPolygonEditorAdjust), (i = this.polygonEditor) == null || i.on("removenode", this.onPolygonEditorAdjust), (s = this.polygonEditor) == null || s.on("addnode", this.onPolygonEditorAdjust), this.map.on("mousedown", this.onMouseDown), this.map.on("mousemove", this.onMovePolygonEditorPoint), this.map.on("mousemove", this.onMovePolygonEditorMidPoint), this.map.on("mousemove", this.onInPolygonEditorLine), this.map.on("mouseup", this.onMouseUp), this;
   }
   /**
    * 移除多边形编辑器，可操作点位事件
    */
   stop() {
-    var e, r, n;
-    (e = this.polygonEditor) == null || e.off("adjust", this.onPolygonEditorAdjust), (r = this.polygonEditor) == null || r.off("removenode", this.onPolygonEditorAdjust), (n = this.polygonEditor) == null || n.off("addnode", this.onPolygonEditorAdjust), this.map.off("mousedown", this.onMouseDown), this.map.off("mousemove", this.onMovePolygonEditorPoint), this.map.off("mousemove", this.onMovePolygonEditorMidPoint), this.map.off("mousemove", this.onInPolygonEditorLine), this.map.off("mouseup", this.onMouseUp);
+    var e, n, o;
+    (e = this.polygonEditor) == null || e.off("adjust", this.onPolygonEditorAdjust), (n = this.polygonEditor) == null || n.off("removenode", this.onPolygonEditorAdjust), (o = this.polygonEditor) == null || o.off("addnode", this.onPolygonEditorAdjust), this.map.off("mousedown", this.onMouseDown), this.map.off("mousemove", this.onMovePolygonEditorPoint), this.map.off("mousemove", this.onMovePolygonEditorMidPoint), this.map.off("mousemove", this.onInPolygonEditorLine), this.map.off("mouseup", this.onMouseUp);
   }
   /**
    * 开始边线测距
@@ -1178,26 +1284,26 @@ class us {
    * @param {object} startPosition
    * @param {object} lastPosition
    */
-  setPosition(e, r) {
-    this.startPosition = e, this.lastPosition = r, this.createDistanceText();
+  setPosition(e, n) {
+    this.startPosition = e, this.lastPosition = n, this.createDistanceText();
   }
   /**
    * 创建距离文本
    * @returns
    */
   createDistanceText() {
-    this.startPointToCursorText && this.lastPointToCursorText || (this.startPointToCursorText = j(), this.lastPointToCursorText = j(), this.startPointToCursorText.setMap(this.map), this.lastPointToCursorText.setMap(this.map));
+    this.startPointToCursorText && this.lastPointToCursorText || (this.startPointToCursorText = N(), this.lastPointToCursorText = N(), this.startPointToCursorText.setMap(this.map), this.lastPointToCursorText.setMap(this.map));
   }
-  updateDistanceText(e, { text: r, textPos: n }) {
-    e.setText(r), e.setPosition(n);
+  updateDistanceText(e, { text: n, textPos: o }) {
+    e.setText(n), e.setPosition(o);
   }
   removeLineDistanceText() {
     var e;
     (e = this.lineLengthText) == null || e.remove(), this.lineLengthText = null;
   }
   removeDistanceText() {
-    var e, r;
-    (e = this.startPointToCursorText) == null || e.remove(), (r = this.lastPointToCursorText) == null || r.remove(), this.startPointToCursorText = null, this.lastPointToCursorText = null;
+    var e, n;
+    (e = this.startPointToCursorText) == null || e.remove(), (n = this.lastPointToCursorText) == null || n.remove(), this.startPointToCursorText = null, this.lastPointToCursorText = null;
   }
   reset() {
     return this.startPosition = null, this.lastPosition = null, this.removeDistanceText(), this.removeLineDistanceText(), this;
@@ -1209,27 +1315,27 @@ class us {
     return console.log("=== 销毁 围栏查看测距事件 =="), this.polygon = null, this.startPosition = null, this.lastPosition = null, this.removeLineDistanceText(), this.stopLineRanging(), this;
   }
 }
-class gs {
+class Vs {
   constructor(e) {
-    s(this, "map");
+    a(this, "map");
     // 线集合
-    s(this, "lines", null);
+    a(this, "lines", null);
     // 多边形
-    s(this, "polygon", null);
+    a(this, "polygon", null);
     // 线长的文本呢
-    s(this, "lineLengthText", null);
+    a(this, "lineLengthText", null);
     // 兜底设置编辑中间点标记列表路径
-    s(this, "editingMidTipMarkerListPath", null);
-    s(this, "onPolygonRanging", (e) => {
-      const r = e.lnglat, n = this.lines.getPointInPolyline(r);
-      if (!n)
+    a(this, "editingMidTipMarkerListPath", null);
+    a(this, "onPolygonRanging", (e) => {
+      const n = e.lnglat, o = this.lines.getPointInPolyline(n);
+      if (!o)
         return this.removeLineDistanceText();
-      const [o, i] = n;
-      this.lineLengthText || (this.lineLengthText = j(), this.lineLengthText.add(this.map)), this.updateDistanceText(this.lineLengthText, A(o, i));
+      const [r, i] = o;
+      this.lineLengthText || (this.lineLengthText = N(), this.lineLengthText.add(this.map)), this.updateDistanceText(this.lineLengthText, U(r, i));
     });
     if (!e)
       throw new Error("map not found!");
-    this.map = e, this.lines = new ye(this.map);
+    this.map = e, this.lines = new Se(this.map);
   }
   /**
    * 开始边线测距
@@ -1244,133 +1350,145 @@ class gs {
   stop() {
     this.map.off("mousemove", this.onPolygonRanging);
   }
-  updateDistanceText(e, { text: r, textPos: n }) {
-    e.setText(r), e.setPosition(n);
+  updateDistanceText(e, { text: n, textPos: o }) {
+    e.setText(n), e.setPosition(o);
   }
   removeLineDistanceText() {
     var e;
     (e = this.lineLengthText) == null || e.remove(), this.lineLengthText = null;
   }
+  /**
+   * 拖拽结束后，需要重新计算一下点位数据
+   */
+  // private onDragEnd() {
+  //     //
+  // }
   destroy() {
     return this.polygon = null, this.stop(), this.removeLineDistanceText(), this;
   }
 }
-class fs {
+class Ys {
   constructor() {
-    s(this, "events", {});
+    a(this, "events", {});
   }
   getEvents(e) {
     return this.events[e] || (this.events[e] = []), this.events[e];
   }
-  emit(e, ...r) {
-    this.getEvents(e).forEach((o) => o(...r));
+  emit(e, ...n) {
+    this.getEvents(e).forEach((r) => r(...n));
   }
-  on(e, r) {
-    !e || typeof e != "string" || this.getEvents(e).push(r);
+  on(e, n) {
+    !e || typeof e != "string" || this.getEvents(e).push(n);
   }
-  once(e, r) {
+  once(e, n) {
     if (!e || typeof e != "string")
       return;
-    const n = (o) => {
-      r(o), this.off(e, n);
+    const o = (r) => {
+      n(r), this.off(e, o);
     };
-    this.on(e, n);
+    this.on(e, o);
   }
-  off(e, r) {
-    !e || typeof e != "string" || (this.events[e] = this.getEvents(e).filter((n) => n !== r));
+  off(e, n) {
+    !e || typeof e != "string" || (this.events[e] = this.getEvents(e).filter((o) => o !== n));
   }
-  hasEvents(e, r) {
-    return !!this.getEvents(e).find((n) => n === r);
+  hasEvents(e, n) {
+    return !!this.getEvents(e).find((o) => o === n);
   }
   clearEvents(e) {
     e ? this.events[e] = [] : this.events = {};
   }
 }
-class ps extends fs {
-  constructor(r) {
+class Xs extends Ys {
+  constructor(n) {
     super();
-    s(this, "map");
+    a(this, "map");
     // 全部点
-    s(this, "circleMarkers", null);
+    a(this, "circleMarkers", null);
     // 编辑器
-    s(this, "polygonEditor", null);
+    a(this, "polygonEditor", null);
     // 多边形全部路径（包括中间点）
-    s(this, "polygonTotalPaths", []);
+    a(this, "polygonTotalPaths", []);
     // 操作点
-    s(this, "circleMarker", null);
+    a(this, "circleMarker", null);
     // 兜底设置编辑中间点标记列表路径
-    s(this, "editingMidTipMarkerListPath", null);
-    s(this, "onPolygonEditorAdjust", () => {
+    a(this, "editingMidTipMarkerListPath", null);
+    a(this, "onPolygonEditorAdjust", () => {
       Promise.resolve().then(() => {
         this.polygonTotalPaths = this.getPolygonEditorTargetTotalPaths(), this.circleMarkers.createCircleMarkersByPaths(this.polygonTotalPaths);
       });
     });
-    s(this, "onMouseDown", (r) => {
-      const n = r.lnglat;
-      this.circleMarker = this.circleMarkers.getPointInCircleMarkers(n), !(!this.circleMarker || !this.getEvents("mousedown").length) && this.emit("mousedown", this.circleMarker);
+    a(this, "onMouseDown", (n) => {
+      const o = n.lnglat;
+      this.circleMarker = this.circleMarkers.getPointInCircleMarkers(o), !(!this.circleMarker || !this.getEvents("mousedown").length) && this.emit("mousedown", this.circleMarker);
     });
-    s(this, "onMouseMove", (r) => {
-      !this.circleMarker || !this.getEvents("mousemove").length || this.emit("mousemove", this.circleMarker, r);
+    a(this, "onMouseMove", (n) => {
+      !this.circleMarker || !this.getEvents("mousemove").length || this.emit("mousemove", this.circleMarker, n);
     });
-    s(this, "onMouseUp", () => {
+    // private onMouseOut = (event: Common.Event) => {
+    //     if (!this.circleMarker) return;
+    //     const events = this.getEvents('mouseout');
+    //     if (!events.length) return;
+    //     this.emit('mouseout', this.circleMarker, event);
+    // };
+    a(this, "onMouseUp", () => {
       !this.getEvents("mouseup").length || !this.circleMarker || (this.emit("mouseup", this.circleMarker), this.circleMarker = null);
     });
-    this.map = r.map, this.polygonEditor = r, this.circleMarkers = new q(this.map), this.start(this.polygonEditor);
+    this.map = n.map, this.polygonEditor = n, this.circleMarkers = new pt(this.map), this.start(this.polygonEditor);
   }
   /**
    * 获取编辑器目标多边形路径
    * @returns
    */
   getPolygonEditorTargetPaths() {
-    var r;
-    return this.polygonEditor ? (r = this.polygonEditor.getTarget().getPath()) != null ? r : [] : [];
+    var n;
+    return this.polygonEditor ? (n = this.polygonEditor.getTarget().getPath()) != null ? n : [] : [];
   }
   /**
    * 
    */
-  setEditingMidTipMarkerListPath(r) {
-    return this.editingMidTipMarkerListPath = r, this;
+  setEditingMidTipMarkerListPath(n) {
+    return this.editingMidTipMarkerListPath = n, this;
   }
   /**
    * 获取编辑中间点标记列表
    * @returns 
    */
   getEditingMidTipMarkerList() {
-    var n, o;
-    const { singleRingListHandle: r } = this.polygonEditor;
+    var o, r;
+    const { singleRingListHandle: n } = this.polygonEditor;
     if (this.editingMidTipMarkerListPath) {
       if (typeof this.editingMidTipMarkerListPath == "function")
         return this.editingMidTipMarkerListPath(this.polygonEditor);
       if (typeof this.editingMidTipMarkerListPath == "string")
-        return ie(this.polygonEditor, this.editingMidTipMarkerListPath);
+        return Me(this.polygonEditor, this.editingMidTipMarkerListPath);
     }
-    return (n = this.polygonEditor.editingMidTipMarkerList) != null && n.length ? this.polygonEditor.editingMidTipMarkerList : r ? (o = r == null ? void 0 : r.list) == null ? void 0 : o.editingMidTipMarkerList : [];
+    return (o = this.polygonEditor.editingMidTipMarkerList) != null && o.length ? this.polygonEditor.editingMidTipMarkerList : n ? (r = n == null ? void 0 : n.list) == null ? void 0 : r.editingMidTipMarkerList : [];
   }
   /**
    * 获取编辑围栏所有点位（白色操作点+蓝色中间操作点）
    * @returns
    */
   getPolygonEditorTargetTotalPaths() {
-    const r = this.getPolygonEditorTargetPaths(), n = this.getEditingMidTipMarkerList();
-    let o = 0;
-    const i = [], a = r.length;
-    for (; o < a; ) {
-      i.push(r[o]);
-      const l = n[o];
-      l && i.push(l.getCenter()), o++;
+    const n = this.getPolygonEditorTargetPaths(), o = this.getEditingMidTipMarkerList();
+    let r = 0;
+    const i = [], s = n.length;
+    for (; r < s; ) {
+      i.push(n[r]);
+      const l = o[r];
+      l && i.push(l.getCenter()), r++;
     }
     return i;
   }
   /**
    * 注册多边形编辑器，可操作点位事件
    */
-  start(r) {
-    var o, i, a;
-    if (!r && !this.polygonEditor)
+  start(n) {
+    var r, i, s;
+    if (!n && !this.polygonEditor)
       throw new Error("polygonEditor not found");
-    this.polygonEditor = r;
-    const { midControlPoint: n } = this.polygonEditor;
-    return this.polygonTotalPaths = this.getPolygonEditorTargetTotalPaths(), this.circleMarkers.setOptions(n).createCircleMarkersByPaths(this.polygonTotalPaths), (o = this.polygonEditor) == null || o.on("adjust", this.onPolygonEditorAdjust), (i = this.polygonEditor) == null || i.on("removenode", this.onPolygonEditorAdjust), (a = this.polygonEditor) == null || a.on("addnode", this.onPolygonEditorAdjust), this.map.on("mousedown", this.onMouseDown), this.map.on("mousemove", this.onMouseMove), this.map.on("mouseup", this.onMouseUp), this;
+    this.polygonEditor = n;
+    const { midControlPoint: o } = this.polygonEditor;
+    return this.polygonTotalPaths = this.getPolygonEditorTargetTotalPaths(), this.circleMarkers.setOptions(o).createCircleMarkersByPaths(this.polygonTotalPaths), (r = this.polygonEditor) == null || r.on("adjust", this.onPolygonEditorAdjust), (i = this.polygonEditor) == null || i.on("removenode", this.onPolygonEditorAdjust), (s = this.polygonEditor) == null || s.on("addnode", this.onPolygonEditorAdjust), this.map.on("mousedown", this.onMouseDown), this.map.on("mousemove", this.onMouseMove), this.map.on("mouseup", this.onMouseUp), this;
   }
   /**
    * 
@@ -1382,16 +1500,278 @@ class ps extends fs {
     return this.stop(), this.circleMarkers.destroy(), this;
   }
 }
-const Ts = {
-  PolygonRangingInDrawing: be,
-  PolygonEditorRanging: us,
-  PolygonEditorEvent: ps,
-  PolygonRanging: gs
+class Zs {
+  constructor(e) {
+    a(this, "opts");
+    a(this, "map");
+    a(this, "width");
+    a(this, "height");
+    a(this, "center");
+    a(this, "leftTop");
+    // 左上点
+    a(this, "rightTop");
+    // 右上点
+    a(this, "leftBottom");
+    // 左下点
+    a(this, "rightBottom");
+    // 右下点
+    a(this, "likeRectangle");
+    return this.bindOptsToSelf(e), e.path || this.setPoints(), this.create();
+  }
+  bindOptsToSelf(e) {
+    this.opts = e, Object.entries(e).forEach(([n, o]) => {
+      this[n] = o;
+    });
+  }
+  calcPoints(e) {
+    const [n, o] = e || this.center, r = new AMap.LngLat(n, o), i = Math.floor(this.width / 2), s = Math.floor(this.height / 2), l = r.offset(-i / 2, s / 2), h = r.offset(i / 2, s / 2), c = r.offset(-i / 2, -s / 2), f = r.offset(i / 2, -s / 2);
+    return {
+      leftTop: [l.lng, l.lat],
+      rightTop: [h.lng, h.lat],
+      leftBottom: [c.lng, c.lat],
+      rightBottom: [f.lng, f.lat]
+    };
+  }
+  setCenter(e) {
+    this.likeRectangle.likeRectangleCenter = this.center = e;
+  }
+  setPoints() {
+    const { leftTop: e, rightTop: n, leftBottom: o, rightBottom: r } = this.calcPoints();
+    this.leftTop = e, this.rightTop = n, this.leftBottom = o, this.rightBottom = r;
+  }
+  create() {
+    var n, o, r;
+    const e = ((n = this.opts) == null ? void 0 : n.path) || [this.leftTop, this.rightTop, this.rightBottom, this.leftBottom];
+    if (this.likeRectangle = new AMap.Polygon(), this.likeRectangle.setOptions(E({ path: e }, this.opts)), this.enhanceProperty(), this.registryEvent(), (o = this.opts) != null && o.path) {
+      const [i, s, l, h] = (r = this.opts) == null ? void 0 : r.path;
+      this.updatePoints(i, s, l, h);
+    }
+    return this.likeRectangle;
+  }
+  enhanceProperty() {
+    this.likeRectangle.likeRectangle = this, this.likeRectangle.leftTop = this.leftTop, this.likeRectangle.rightTop = this.rightTop, this.likeRectangle.rightBottom = this.rightBottom, this.likeRectangle.leftBottom = this.leftBottom, this.likeRectangle.likeRectangleCenter = this.center;
+  }
+  registryEvent() {
+    this.likeRectangle && (this.onDragEnd = this.onDragEnd.bind(this), this.likeRectangle.on("dragend", this.onDragEnd));
+  }
+  onDragEnd(e) {
+    const o = e.target.getPath(), [r, i, s, l] = o;
+    this.updatePoints(r, i, s, l);
+  }
+  updatePoints(e, n, o, r) {
+    this.likeRectangle.leftTop = this.leftTop = e, this.likeRectangle.rightTop = this.rightTop = n, this.likeRectangle.rightBottom = this.rightBottom = o, this.likeRectangle.leftBottom = this.leftBottom = r, this.setCenter(this.getCenter());
+  }
+  getCenter() {
+    var n;
+    return (n = this.map.getFitZoomAndCenterByOverlays([this.likeRectangle])) == null ? void 0 : n.pop();
+  }
+}
+const at = 10;
+class qs {
+  constructor(e, n, o) {
+    a(this, "point");
+    a(this, "points");
+    a(this, "center");
+    a(this, "context");
+    a(this, "isEnabled", !1);
+    this.context = e, this.point = n, this.points = o, this.init(), this.clearClientEvent();
+  }
+  get len() {
+    return this.points.length - 1;
+  }
+  get extData() {
+    return this.point.getExtData();
+  }
+  get idx() {
+    return this.extData.idx;
+  }
+  get map() {
+    return this.context.map;
+  }
+  get xAxisMax() {
+    return document.body.clientWidth;
+  }
+  get yAxisMax() {
+    return document.body.clientHeight;
+  }
+  enable() {
+    this.isEnabled || (this.isEnabled = !0, this.setCursorPointer("move"), this.registryEvent());
+  }
+  disable() {
+    this.isEnabled = !1, this.setCursorPointer("pointer"), this.destroyEvent();
+  }
+  setCursorPointer(e) {
+    var n;
+    (n = this.point) == null || n.setOptions({ cursor: e });
+  }
+  init() {
+    this.center = this.point.getCenter(), this.onMouseOver = this.onMouseOver.bind(this), this.onMouseOut = this.onMouseOut.bind(this), this.onDragStart = this.onDragStart.bind(this), this.onDragging = Ws(this.onDragging.bind(this), 100), this.onDragEnd = this.onDragEnd.bind(this), this.defaultRegistryEvent();
+  }
+  clearClientEvent() {
+    this.point.clearEvents("click");
+  }
+  defaultRegistryEvent() {
+    this.point.on("mouseover", this.onMouseOver), this.point.on("mouseout", this.onMouseOut);
+  }
+  registryEvent() {
+    this.point.on("dragstart", this.onDragStart), this.point.on("dragend", this.onDragEnd), console.log("注册完成");
+  }
+  destroyEvent() {
+    this.point.off("dragstart", this.onDragStart), this.point.off("dragend", this.onDragEnd);
+  }
+  onMouseOver() {
+    console.log(`点位${this.extData.idx} 移入`), this.enable();
+  }
+  onMouseOut() {
+    console.log(`点位${this.extData.idx} 移出`), this.disable();
+  }
+  onDragStart(e) {
+    console.log(`点位${this.extData.idx} 移动开始`), st(this.context.onChange, at, e);
+  }
+  onDragging(e) {
+    const { pixel: n } = e;
+    this.updateNextLeftPoint(n, e), this.updateNextRightPoint(n, e), st(this.context.onChange, at, e);
+  }
+  onDragEnd(e) {
+    const { target: n, pixel: o } = e;
+    this.updateNextLeftPoint(o, e), this.updateNextRightPoint(o, e), this.center = n.getCenter(), st(this.context.onChange, at, e);
+  }
+  /**
+   * 更新下一个左节点位置
+   */
+  updateNextLeftPoint(e, n) {
+    const o = this.idx - 1 >= 0 ? this.idx - 1 : this.len, r = this.points[o], i = this.map.lngLatToContainer(r.getCenter()), s = this.map.lngLatToContainer(this.center), l = (s.y - i.y) / (s.x - i.x), h = s.y - l * s.x, c = o - 1 >= 0 ? o - 1 : this.len, f = this.points[c], T = this.map.lngLatToContainer(f.getCenter()), d = -1 / l;
+    let p = T.y - d * T.x;
+    const M = i.y - d * i.x - p;
+    console.log("updateNextLeftPoint 验证", M), Math.abs(M) >= 0.1 && (console.log("=== updateNextLeftPoint 矫正 b2 值 ==="), console.log(`矫正前 b2 = ${p}`), p += M, console.log(`矫正后 b2 = ${p}`), console.log("updateNextLeftPoint 矫正后验证", i.y - d * i.x - p));
+    const v = l, P = e.y - v * e.x;
+    let m = [], x = 0;
+    for (; x < this.xAxisMax; ) {
+      const O = d * x + p, b = O - v * x - P;
+      if (-2 <= b && b <= 2)
+        if (m.push(b), -0.01 <= b && b <= 0.01) {
+          console.log("updateNextLeftPoint.val ===>", b);
+          const A = new AMap.Pixel(x, O);
+          this.dispatch(r, A, n.originEvent);
+          break;
+        } else
+          x += 5e-3;
+      else
+        x += 0.5;
+    }
+    x >= this.xAxisMax && (console.log(m), console.error("updateNextLeftPoint ===> 未找到交点"), console.log("k1 ===>", l), console.log("b1 ===>", h), console.log("验证", i.y - l * i.x - h), console.log("k2 ===>", d), console.log("b2 ===>", p), console.log("验证", i.y - d * i.x - p), console.log("k3 ===>", v), console.log("b3 ===>", P));
+  }
+  /**
+   * 更新下一个右节点位置
+   */
+  updateNextRightPoint(e, n) {
+    const o = this.idx + 1 <= this.len ? this.idx + 1 : 0, r = this.points[o], i = this.map.lngLatToContainer(r.getCenter()), s = this.map.lngLatToContainer(this.center), l = (s.y - i.y) / (s.x - i.x), h = s.y - l * s.x, c = o + 1 <= this.len ? o + 1 : 0, f = this.points[c], T = this.map.lngLatToContainer(f.getCenter()), d = -1 / l;
+    let p = T.y - d * T.x;
+    const M = i.y - d * i.x - p;
+    console.log("updateNextRightPoint 验证", M), Math.abs(M) >= 0.01 && (console.log("=== updateNextRightPoint 矫正 b2 值 ==="), console.log(`矫正前 b2 = ${p}`), p += M, console.log(`矫正后 b2 = ${p}`));
+    const v = l, P = e.y - v * e.x, m = [];
+    let x = 0;
+    for (; x < this.xAxisMax; ) {
+      const O = d * x + p, b = O - v * x - P;
+      if (-2 < b && b < 2)
+        if (m.push(b), -0.01 <= b && b <= 0.01) {
+          console.log("updateNextRightPoint.val ===>", b);
+          const A = new AMap.Pixel(x, O);
+          this.dispatch(r, A, n.originEvent);
+          break;
+        } else
+          x += 5e-3;
+      else
+        x += 0.5;
+    }
+    x >= this.xAxisMax && (console.log(m), console.error("updateNextRightPoint ===> 未找到交点"), console.log("k1 ===>", l), console.log("b1 ===>", h), console.log("验证", i.y - l * i.x - h), console.log("k2 ===>", d), console.log("b2 ===>", p), console.log("验证", i.y - d * i.x - p), console.log("k3 ===>", v), console.log("b3 ===>", P), console.log("验证", e.y - v * e.x - P));
+  }
+  dispatch(e, n, o) {
+    const i = {
+      lnglat: this.map.containerToLngLat(n),
+      originEvent: o
+      // 这里的鼠标事件直接透传即可
+    };
+    e.emit("dragend", i);
+  }
+}
+class Js {
+  constructor(e, n, o) {
+    a(this, "opts");
+    a(this, "map");
+    a(this, "likeRectangle");
+    a(this, "polygonEditor");
+    a(this, "polygonEditorOpen");
+    a(this, "controlPoints");
+    return this.map = e, this.likeRectangle = n, this.opts = o, this.onChange = this.onChange.bind(this), this.createEditor();
+  }
+  get options() {
+    return nt(E({}, this.opts), {
+      midControlPoint: { radius: 0 }
+    });
+  }
+  /**
+   * 重新 polygonEditor.open 方法
+   */
+  open() {
+    this.polygonEditorOpen(), this.controlPointRegistryEvent();
+  }
+  findControlPoint(e) {
+    return this.controlPoints.find((n) => {
+      const o = n.point.getCenter(), r = `${o.lng}_${o.lat}`, i = e.getCenter(), s = `${i.lng}_${i.lat}`;
+      return r === s;
+    });
+  }
+  createEditor() {
+    const e = this.likeRectangle;
+    return this.polygonEditor = new AMap.PolygonEditor(this.map, e, this.options), this.enhanceProperty(), this.polygonEditor;
+  }
+  enhanceProperty() {
+    this.polygonEditor.likeRectangleEditor = this, this.polygonEditorOpen = this.polygonEditor.open, this.polygonEditor.open = this.open.bind(this);
+  }
+  controlPointRegistryEvent() {
+    var n, o, r, i;
+    const e = (i = (r = (o = (n = this.polygonEditor) == null ? void 0 : n.singleRingListHandle) == null ? void 0 : o.list) == null ? void 0 : r.editingVertexMarkerList) != null ? i : [];
+    this.controlPoints = e.map((s, l) => {
+      const h = s.getExtData() || {};
+      return s.setExtData(nt(E({}, h), { idx: l })), new qs(this, s, e);
+    });
+  }
+  onChange() {
+    var e, n;
+    this.updateCenterMarker(), this.updateLikeRectanglePath(), (n = (e = this.opts).onChange) == null || n.call(e);
+  }
+  updateCenterMarker() {
+  }
+  updateLikeRectanglePath() {
+    const [
+      e,
+      n,
+      o,
+      r
+    ] = this.controlPoints, i = e.point.getCenter(), s = n.point.getCenter(), l = o.point.getCenter(), h = r.point.getCenter();
+    this.likeRectangle.likeRectangle.updatePoints(
+      [i.lng, i.lat],
+      [s.lng, s.lat],
+      [l.lng, l.lat],
+      [h.lng, h.lat]
+    );
+  }
+}
+const ea = {
+  PolygonRangingInDrawing: Ue,
+  PolygonEditorRanging: Ks,
+  PolygonEditorEvent: Xs,
+  PolygonRanging: Vs,
+  LikeRectangle: Zs,
+  LikeRectangleEditor: Js
 };
 export {
-  ps as PolygonEditorEvent,
-  us as PolygonEditorRanging,
-  gs as PolygonRanging,
-  be as PolygonRangingInDrawing,
-  Ts as default
+  Zs as LikeRectangle,
+  Js as LikeRectangleEditor,
+  Xs as PolygonEditorEvent,
+  Ks as PolygonEditorRanging,
+  Vs as PolygonRanging,
+  Ue as PolygonRangingInDrawing,
+  ea as default
 };

@@ -15,5 +15,8 @@ export default class PolygonRanging {
     private onPolygonRanging;
     private updateDistanceText;
     private removeLineDistanceText;
+    /**
+     * 拖拽结束后，需要重新计算一下点位数据
+     */
     destroy(): this;
 }

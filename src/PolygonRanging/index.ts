@@ -69,6 +69,13 @@ export default class PolygonRanging {
         this.lineLengthText = null;
     }
 
+    /**
+     * 拖拽结束后，需要重新计算一下点位数据
+     */
+    // private onDragEnd() {
+    //     //
+    // }
+
     public destroy() {
         this.polygon = null;
         this.stop();

@@ -128,6 +128,9 @@ export default class PolygonEditorEvent extends Event {
         // 中间点的计算距离是：蓝色点 - 白色点
         this.map.on('mousemove', this.onMouseMove);
 
+        // 鼠标移出
+        // this.map.on('mouseout', this.onMouseOut);
+
         // 鼠标松开
         this.map.on('mouseup', this.onMouseUp);
 
@@ -140,6 +143,7 @@ export default class PolygonEditorEvent extends Event {
     private stop() {
         this.map.off('mousedown', this.onMouseDown);
         this.map.off('mousemove', this.onMouseMove);
+        // this.map.on('mouseout', this.onMouseOut);
         this.map.off('mouseup', this.onMouseUp);
     }
 
@@ -172,6 +176,15 @@ export default class PolygonEditorEvent extends Event {
 
         this.emit('mousemove', this.circleMarker, event);
     };
+
+    // private onMouseOut = (event: Common.Event) => {
+    //     if (!this.circleMarker) return;
+
+    //     const events = this.getEvents('mouseout');
+    //     if (!events.length) return;
+
+    //     this.emit('mouseout', this.circleMarker, event);
+    // };
 
     private onMouseUp = () => {
         const events = this.getEvents('mouseup');
