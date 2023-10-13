@@ -56,7 +56,7 @@ export default class PolygonRanging {
      * @param polygon 
      * @returns 
      */
-    public open(polygon: AMap.Polygon) {
+    public open(polygon: AMap.Polygon | null = this.polygon) {
         this.start(polygon);
     }
 
@@ -65,7 +65,7 @@ export default class PolygonRanging {
      * @param polygon 
      * @returns 
      */
-    public start(polygon: AMap.Polygon) {
+    public start(polygon: AMap.Polygon | null) {
         if (!polygon) {
             throw new Error('polygon not found');
         }

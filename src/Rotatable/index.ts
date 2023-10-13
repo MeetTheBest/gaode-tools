@@ -324,6 +324,7 @@ class Rotatable extends Event {
         return this.initAngle;
     }
 
+    // TODO 需要处理小于中点的情况
     calcInitOffset() {
         if (!this.mapIns) return 0;
 

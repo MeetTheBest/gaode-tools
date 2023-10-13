@@ -1421,7 +1421,7 @@ class ih {
    * @param polygon 
    * @returns 
    */
-  open(r) {
+  open(r = this.polygon) {
     this.start(r);
   }
   /**
