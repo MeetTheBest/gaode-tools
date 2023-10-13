@@ -3,8 +3,8 @@ import LikeRectangle from '../LikeRectangle';
 import Event from '../Event';
 declare class Rotatable extends Event {
     likeRectangleIns: LikeRectangle & AMap.Polygon;
-    moveableIns: Moveable;
-    rotationPointIns: AMap.Marker;
+    moveableIns: Moveable | null;
+    rotationPointIns: AMap.Marker | null;
     midPoint: AMap.LngLat;
     initAngle: number;
     offset: number;
@@ -17,9 +17,10 @@ declare class Rotatable extends Event {
     get center(): AMap.Vector2;
     get draggable(): any;
     open(): void;
+    reset(): void;
     close(): void;
-    registryPolygonEvents(): void;
-    destroyPolygonEvents(): void;
+    registryLikeRectangleEvents(): void;
+    destroyLikeRectangleEvents(): void;
     /**
      * 旋转点（即中心点）
      */

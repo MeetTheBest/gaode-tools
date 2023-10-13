@@ -1,7 +1,6 @@
-import { delay, throttle } from 'lodash-es';
+import { throttle } from 'lodash-es';
 import LikeRectangleEditor from ".";
 
-const DELAY_TIME = 10;
 class ControlPoint {
     point!: AMap.CircleMarker;
     points!: AMap.CircleMarker[];
@@ -111,7 +110,7 @@ class ControlPoint {
 
     onDragStart(data) {
         console.log(`点位${this.extData.idx} 移动开始`);
-        delay(this.context.onDragStart, DELAY_TIME, data);
+        this.context.onDragStart(data);
     }
 
     onDragging(data: IObject) {
@@ -124,8 +123,7 @@ class ControlPoint {
 
         // 更新下一个右节点的位置
         this.updateNextRightPoint(pixel, data);
-
-        delay(this.context.onDragging, DELAY_TIME, data);
+        this.context.onDragging(data);
     }
 
     onDragEnd(data: IObject) {
@@ -139,8 +137,7 @@ class ControlPoint {
 
         // 更新中心点
         this.center = target.getCenter();
-
-        delay(this.context.onDragEnd, DELAY_TIME, data);
+        this.context.onDragEnd(data);
     }
 
     /**

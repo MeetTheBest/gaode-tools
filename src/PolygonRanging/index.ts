@@ -56,8 +56,8 @@ export default class PolygonRanging {
      * @param polygon 
      * @returns 
      */
-    public open(polygon: AMap.Polygon | null = this.polygon) {
-        this.start(polygon);
+    public open(polygon: AMap.Polygon) {
+        this.start(polygon || this.polygon);
     }
 
     /**
@@ -65,11 +65,8 @@ export default class PolygonRanging {
      * @param polygon 
      * @returns 
      */
-    public start(polygon: AMap.Polygon | null) {
-        if (!polygon) {
-            throw new Error('polygon not found');
-        }
-        if (this.polygon) return;
+    public start(polygon: AMap.Polygon) {
+        if (!polygon || this.polygon) return;
 
         this.polygon = polygon;
         this.lines!.createLinesByPaths(this.polygon.getPath() as Common.IPath);

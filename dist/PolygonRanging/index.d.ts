@@ -19,13 +19,13 @@ export default class PolygonRanging {
      * @param polygon
      * @returns
      */
-    open(polygon?: AMap.Polygon | null): void;
+    open(polygon: AMap.Polygon): void;
     /**
      * 开始边线测距
      * @param polygon
      * @returns
      */
-    start(polygon: AMap.Polygon | null): void;
+    start(polygon: AMap.Polygon): void;
     registryPolygonEvents(): void;
     destroyPolygonEvents(): void;
     close(): void;

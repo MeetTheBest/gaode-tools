@@ -6,8 +6,8 @@ import { computePointDistance } from '../utils/calc';
 
 class Rotatable extends Event {
     likeRectangleIns!: LikeRectangle & AMap.Polygon;
-    moveableIns!: Moveable;
-    rotationPointIns!: AMap.Marker;
+    moveableIns: Moveable | null = null;
+    rotationPointIns: AMap.Marker | null = null;
     midPoint!: AMap.LngLat;
     initAngle!: number;
     offset!: number;
@@ -44,32 +44,37 @@ class Rotatable extends Event {
         this.calcMidPoint();
         this.calcInitAngle();
         this.setRotationLine();
-        this.registryPolygonEvents();
+        this.registryLikeRectangleEvents();
         // 创建
         this.createRotationPoint();
     }
 
-    close() {
-        this.rotationPointIns?.destroy?.();
-        this.destroyPolygonEvents();
-        this.destroyEvent();
+    reset() {
         this.moveableIns?.destroy?.();
+        this.moveableIns = null;
+        this.rotationPointIns?.destroy?.();
+        this.rotationPointIns = null;
     }
 
-    registryPolygonEvents() {
+    close() {
+        this.reset();
+        this.destroyLikeRectangleEvents();
+        this.destroyEvent();
+    }
+
+    registryLikeRectangleEvents() {
         // 可拖动，注册拖动结束事件
-        if (this.draggable) {
+        const hasEvent = this.likeRectangleIns.hasEvents('dragstart', this.onDragStart);
+        if (this.draggable && !hasEvent) {
             this.likeRectangleIns!.on('dragstart', this.onDragStart);
             this.likeRectangleIns!.on('dragend', this.onDragEnd);
         }
     }
 
-    destroyPolygonEvents() {
+    destroyLikeRectangleEvents() {
         // 可拖动，注册拖动结束事件
-        if (this.draggable) {
-            this.likeRectangleIns!.on('dragstart', this.onDragStart);
-            this.likeRectangleIns!.on('dragend', this.onDragEnd);
-        }
+        this.likeRectangleIns!.off('dragstart', this.onDragStart);
+        this.likeRectangleIns!.off('dragend', this.onDragEnd);
     }
 
     /**
@@ -77,6 +82,7 @@ class Rotatable extends Event {
      */
     async createRotationPoint() {
         this.rotationPointIns?.destroy?.();
+        this.rotationPointIns = null;
         this.rotationPointIns = new AMap.Marker({
             map: this.mapIns,
             position: this.center,
@@ -163,17 +169,19 @@ class Rotatable extends Event {
     };
 
     registryEvent() {
+        if (!this.moveableIns) return;
         this.moveableIns.on('rotateStart', this.onRotateStart);
         this.moveableIns.on('rotate', this.onRotate);
         this.moveableIns.on('rotateEnd', this.onRotateEnd);
-        this.mapIns.on('zoomchange', this.updateRotationAbleOffset);
+        this.mapIns?.on?.('zoomchange', this.updateRotationAbleOffset);
     }
 
     destroyEvent() {
+        if (!this.moveableIns) return;
         this.moveableIns.off('rotateStart', this.onRotateStart);
         this.moveableIns.off('rotate', this.onRotate);
         this.moveableIns.off('rotateEnd', this.onRotateEnd);
-        this.mapIns.off('zoomchange', this.updateRotationAbleOffset);
+        this.mapIns?.off?.('zoomchange', this.updateRotationAbleOffset);
     }
 
     onRotateStart = () => {
@@ -265,7 +273,10 @@ class Rotatable extends Event {
     };
 
     calcMidPoint() {
-        const path = this.likeRectangleIns.getPath()?.map((lngLat: any) => [lngLat.lng, lngLat.lat])! as unknown as number[];
+        const path = this.likeRectangleIns?.getPath?.()?.map((lngLat: any) => [lngLat.lng, lngLat.lat])! as unknown as number[];
+        if (!path.length || !this.mapIns) {
+            throw new Error('likeRectangle or map is undefined');
+        }
 
         const firstPoint = path[0];
         console.log('firstPoint ===>', firstPoint);
@@ -354,14 +365,15 @@ class Rotatable extends Event {
     }
 
     private onDragStart = async () => {
-        this.close();
+        console.log('Rotatable.onDragStart');
+        this.reset();
     }
 
     /**
      * 拖拽结束后，需要重新计算一下点位数据
      */
     private onDragEnd = async () => {
-        await Promise.resolve();
+        console.log('Rotatable.onDragEnd');
         this.open();
     }
 
