@@ -38,8 +38,18 @@ export default class PolygonEditorRanging {
     private getPolygonEditorTargetTotalPaths;
     /**
      * 注册多边形编辑器，可操作点位事件
+     * @param polygonEditor
+     */
+    open(polygonEditor: AMap.PolygonEditor): void;
+    /**
+     * 注册多边形编辑器，可操作点位事件
+     * @param polygonEditor
      */
     start(polygonEditor: AMap.PolygonEditor): this;
+    /**
+     * 移除多边形编辑器，可操作点位事件
+     */
+    close(): void;
     /**
      * 移除多边形编辑器，可操作点位事件
      */

@@ -1,11 +1,12 @@
 import type LikeRectangle from './index';
 
-export interface ILikeRectangle {
+export interface ILikeRectangle extends Partial<AMap.PolygonOptions> {
     center: AMap.Vector2 | null; // 中心点
     leftTop: AMap.Vector2 | null; // 左上点
     rightTop: AMap.Vector2 | null; // 右上点
     leftBottom: AMap.Vector2 | null; // 左下点
     rightBottom: AMap.Vector2 | null; // 右下点
+    rotatable?: boolean;
     // likeRectangleCenter: AMap.Vector2 | null; // 中心点
 }
 
@@ -15,9 +16,10 @@ export interface ILikeRectangle {
 // - 中心点 + 宽 + 高
 export interface ILikeRectangleOptions extends AMap.PolygonOptions {
     map: AMap.Map,
-    center: AMap.Vector2;
-    width: number;
-    height: number;
+    center?: AMap.Vector2;
+    width?: number;
+    height?: number;
+    rotatable?: boolean;
 }
 
 export interface IEnhanceProperty extends ILikeRectangle {

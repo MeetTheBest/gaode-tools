@@ -1,8 +1,10 @@
 import LineCollection from '../PolygonEditorRanging/lineCollection';
 import { IDistanceText } from '../PolygonEditorRanging/type';
 import { createText, computePoint2PointDistance } from '../utils/index';
+import { IOptions } from './type';
 
 export default class PolygonRanging {
+    opts: IOptions | undefined = undefined;
     private map: AMap.Map;
     // 线集合
     private lines: LineCollection | null = null;
@@ -14,17 +16,39 @@ export default class PolygonRanging {
     // 兜底设置编辑中间点标记列表路径
     editingMidTipMarkerListPath: string | ((polygonEditor: AMap.PolygonEditor) => AMap.PolygonEditor) | null = null;
 
-    constructor(map: AMap.Map) {
+    constructor(map: AMap.Map, opts?: IOptions) {
         if (!map) {
             throw new Error('map not found!');
         }
+        this.opts = opts;
         this.map = map;
         this.lines = new LineCollection(this.map);
+
+        this.immediateActive();
+    }
+
+    get immediate() {
+        return this.opts?.immediate;
     }
 
     get draggable() {
         const options = this.polygon?.getOptions();
         return options.draggable;
+    }
+
+    get rotatable() {
+        // @ts-ignore
+        return this.polygon?.rotatable;
+    }
+
+    /**
+     * 立刻激活
+     */
+    private immediateActive() {
+        const target = this.opts?.target;
+        if (this.immediate && target instanceof AMap.Polygon) {
+            this.open(target);
+        }
     }
 
     /**
@@ -61,6 +85,11 @@ export default class PolygonRanging {
         // 可拖动，注册拖动结束事件
         if (this.draggable) {
             this.polygon!.on('dragend', this.onDragEnd);
+        }
+
+        if (this.rotatable && 'likeRectangle' in this.polygon) {
+            // @ts-ignore
+            this.polygon!.on('rotateEnd', this.onRotateEndEnd);
         }
     }
 
@@ -101,6 +130,16 @@ export default class PolygonRanging {
     private removeLineDistanceText() {
         this.lineLengthText?.remove();
         this.lineLengthText = null;
+    }
+
+    /**
+ * 拖拽结束后，需要重新计算一下点位数据
+ */
+    private onRotateEndEnd = async () => {
+        await Promise.resolve();
+
+        const target = this.polygon;
+        this.onDragEnd({ target });
     }
 
     /**

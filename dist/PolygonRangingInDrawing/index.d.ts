@@ -6,9 +6,17 @@ export default class PolygonRanging {
     private lastPosition;
     constructor(map: AMap.Map);
     /**
+ * 注册地图事件
+ */
+    open(): void;
+    /**
      * 注册地图事件
      */
     start(): void;
+    /**
+ * 移除地图注册事件
+ */
+    close(): void;
     /**
      * 移除地图注册事件
      */

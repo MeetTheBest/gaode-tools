@@ -8,6 +8,16 @@ const TEXT_STYLE = {
     color: '#fff'
 };
 
+export const uuid = () =>
+    Math.random()
+        .toString(16)
+        .substring(2);
+
+export const formatNumber = (num: number, precision = 2) => {
+    if (Number.isNaN(+num)) return num;
+    return +(num.toFixed(Math.max(precision, 0)))
+}
+
 /**
  * 创建文本
  * @param text 

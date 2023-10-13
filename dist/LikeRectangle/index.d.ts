@@ -1,5 +1,7 @@
 import type { ILikeRectangle, ILikeRectangleOptions, IEnhanceProperty } from './type';
-declare class LikeRectangle implements ILikeRectangle {
+import Event from '../Event';
+import Rotatable from '../Rotatable';
+declare class LikeRectangle extends Event implements ILikeRectangle {
     opts: ILikeRectangleOptions;
     map: ILikeRectangleOptions['map'];
     width: number;
@@ -10,8 +12,13 @@ declare class LikeRectangle implements ILikeRectangle {
     leftBottom: AMap.Vector2;
     rightBottom: AMap.Vector2;
     likeRectangle: AMap.Polygon & IEnhanceProperty;
+    rotatableIns: Rotatable;
+    likeRectangleDestroy: () => void;
     constructor(opts: ILikeRectangleOptions);
     bindOptsToSelf(opts: ILikeRectangleOptions): void;
+    enhanceMethods(): void;
+    destroy(): void;
+    registerRotatable(): void;
     calcPoints(center?: AMap.Vector2): {
         leftTop: AMap.Vector2;
         rightTop: AMap.Vector2;

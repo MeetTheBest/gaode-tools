@@ -1,3 +1,5 @@
+export declare const uuid: () => string;
+export declare const formatNumber: (num: number, precision?: number) => number;
 /**
  * 创建文本
  * @param text

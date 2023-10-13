@@ -1,6 +1,9 @@
 import type { ILikeRectangle, ILikeRectangleOptions, IEnhanceProperty } from './type';
+import Event from '../Event';
+import Rotatable from '../Rotatable';
+import { formatNumber } from '../utils';
 
-class LikeRectangle implements ILikeRectangle {
+class LikeRectangle extends Event implements ILikeRectangle {
     opts!: ILikeRectangleOptions;
     map!: ILikeRectangleOptions['map'];
     width!: number;
@@ -11,15 +14,25 @@ class LikeRectangle implements ILikeRectangle {
     leftBottom!: AMap.Vector2; // 左下点
     rightBottom!: AMap.Vector2; // 右下点
     likeRectangle!: AMap.Polygon & IEnhanceProperty;
+    rotatableIns!: Rotatable;
+    likeRectangleDestroy!: () => void;
 
     constructor(opts: ILikeRectangleOptions) {
+        super();
         this.bindOptsToSelf(opts);
 
         if (!opts.path) {
             this.setPoints();
         }
+
+        const ins = this.create() as AMap.Polygon & IEnhanceProperty;
+
+        this.registerRotatable();
+
+        this.enhanceMethods();
+
         // @ts-ignore
-        return this.create();
+        return ins;
     }
 
     bindOptsToSelf(opts: ILikeRectangleOptions) {
@@ -29,12 +42,31 @@ class LikeRectangle implements ILikeRectangle {
         });
     }
 
+    enhanceMethods() {
+        this.likeRectangleDestroy = this.likeRectangle.destroy.bind(this.likeRectangle);
+        this.likeRectangle.destroy = this.destroy.bind(this);
+    }
+
+    destroy() {
+        this.rotatableIns?.close?.();
+        this.likeRectangleDestroy();
+    }
+
+    registerRotatable() {
+        if (!this.opts.rotatable) return;
+        this.rotatableIns = new Rotatable(this.likeRectangle as unknown as LikeRectangle & AMap.Polygon);
+        const target = this.likeRectangle;
+        this.rotatableIns.on('rotateStart', (event) => target.emit('rotateStart', event));
+        this.rotatableIns.on('rotate', (event) => target.emit('rotate', event));
+        this.rotatableIns.on('rotateEnd', (event) => target.emit('rotateEnd', event));
+    }
+
     calcPoints(center?: AMap.Vector2) {
         const [centerLng, centerLat] = center || this.center!;
         const centerPoint = new AMap.LngLat(centerLng, centerLat);
 
-        const HALF_WIDTH = Math.floor(this.width / 2);
-        const HALF_HEIGHT = Math.floor(this.height / 2);
+        const HALF_WIDTH = formatNumber(this.width / 2);
+        const HALF_HEIGHT = formatNumber(this.height / 2);
 
         // 左上
         const leftTop = centerPoint.offset(-HALF_WIDTH / 2, HALF_HEIGHT / 2);
@@ -92,6 +124,7 @@ class LikeRectangle implements ILikeRectangle {
         this.likeRectangle.rightBottom = this.rightBottom;
         this.likeRectangle.leftBottom = this.leftBottom;
         this.likeRectangle.likeRectangleCenter = this.center;
+        this.likeRectangle.rotatable = this.opts.rotatable;
     }
 
     registryEvent() {

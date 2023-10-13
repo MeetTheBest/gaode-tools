@@ -13,8 +13,12 @@ export default defineConfig({
     server: {
         open: true
     },
+    esbuild: {
+        drop: ['console'], // 删除 console.log
+    },
     build: {
         target: "es2015",
+        minify: true,
         lib: {
             entry: './src/main.ts',
             name: 'gaode-tools',

@@ -8,19 +8,32 @@ declare class LikeRectangleEditor {
     likeRectangle: LikeRectangle;
     polygonEditor: AMap.PolygonEditor & IEnhanceProperty;
     polygonEditorOpen: () => void;
+    polygonEditorClose: () => void;
     controlPoints: ControlPoint[];
+    inEditing: boolean;
+    isRestart: boolean;
     constructor(map: AMap.Map, likeRectangle: LikeRectangle, opts: PolygonEditorOptions & IEnhanceEditorOptions);
     get options(): PolygonEditorOptions;
+    get rotatable(): any;
+    get rotatingCloseEditor(): boolean | undefined;
+    get rotatableIns(): any;
     /**
      * 重新 polygonEditor.open 方法
      */
     open(): void;
+    close(): void;
     findControlPoint(point: AMap.CircleMarker): ControlPoint | undefined;
     createEditor(): AMap.PolygonEditor & IEnhanceProperty;
     enhanceProperty(): void;
-    controlPointRegistryEvent(): void;
-    onChange(): void;
-    updateCenterMarker(): void;
+    registryLikeRectangleRotateEvents(): void;
+    destroyLikeRectangleRotateEvents(): void;
+    registryControlPoints(): void;
+    onDragStart: (data: any) => void;
+    onDragging: (data: any) => void;
+    onDragEnd: (data: any) => void;
+    onChange: (type: string, data: any) => void;
     updateLikeRectanglePath(): void;
+    onRotateStart: () => Promise<void>;
+    onRotateEnd: () => Promise<void>;
 }
 export default LikeRectangleEditor;

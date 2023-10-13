@@ -28,11 +28,19 @@ export default class PolygonEditorEvent extends Event {
      */
     private getPolygonEditorTargetTotalPaths;
     /**
+ * 注册多边形编辑器，可操作点位事件
+ */
+    private open;
+    /**
      * 注册多边形编辑器，可操作点位事件
      */
     private start;
     /**
-     *
+     * 停止事件行为
+     */
+    private close;
+    /**
+     * 停止事件行为
      */
     private stop;
     private onPolygonEditorAdjust;

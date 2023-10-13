@@ -70,11 +70,8 @@ class ControlPoint {
         this.onMouseOut = this.onMouseOut.bind(this);
 
         this.onDragStart = this.onDragStart.bind(this);
-        this.onDragging = throttle(this.onDragging.bind(this), 100);
+        this.onDragging = throttle(this.onDragging.bind(this), 4);
         this.onDragEnd = this.onDragEnd.bind(this);
-
-        // this.updateNextLeftPoint = throttle(this.updateNextLeftPoint.bind(this), 100);
-        // this.updateNextRightPoint = throttle(this.updateNextRightPoint.bind(this), 100);
 
         this.defaultRegistryEvent();
     }
@@ -89,18 +86,16 @@ class ControlPoint {
         this.point.on('mouseout', this.onMouseOut);
     }
 
-
     registryEvent() {
         this.point.on('dragstart', this.onDragStart);
-        // TODO 实时问题很大
-        // this.point.on('dragging', this.onDragging);
+        this.point.on('dragging', this.onDragging);
         this.point.on('dragend', this.onDragEnd);
         console.log('注册完成');
     }
 
     destroyEvent() {
         this.point.off('dragstart', this.onDragStart);
-        // this.point.off('dragging', this.onDragging);
+        this.point.off('dragging', this.onDragging);
         this.point.off('dragend', this.onDragEnd);
     }
 
@@ -116,7 +111,7 @@ class ControlPoint {
 
     onDragStart(data) {
         console.log(`点位${this.extData.idx} 移动开始`);
-        delay(this.context.onChange, DELAY_TIME, data);
+        delay(this.context.onDragStart, DELAY_TIME, data);
     }
 
     onDragging(data: IObject) {
@@ -130,10 +125,7 @@ class ControlPoint {
         // 更新下一个右节点的位置
         this.updateNextRightPoint(pixel, data);
 
-        // 更新中心点
-        // this.center = target.getCenter();
-
-        delay(this.context.onChange, DELAY_TIME, data);
+        delay(this.context.onDragging, DELAY_TIME, data);
     }
 
     onDragEnd(data: IObject) {
@@ -148,7 +140,7 @@ class ControlPoint {
         // 更新中心点
         this.center = target.getCenter();
 
-        delay(this.context.onChange, DELAY_TIME, data);
+        delay(this.context.onDragEnd, DELAY_TIME, data);
     }
 
     /**
@@ -162,18 +154,6 @@ class ControlPoint {
         // console.log('leftPointPixel ===>', leftPointPixel);
         // this.map.add(new AMap.Marker({ position: leftPoint.getCenter() }));
 
-        // 当前操作点 xy 坐标
-        const currentPixel = this.map.lngLatToContainer(this.center);
-        // console.log('currentPixel ===>', currentPixel);
-        // this.map.add(new AMap.Marker({ position: this.center }));
-
-        // y1 = k1 * x1 + b1
-        const k1 = (currentPixel.y - leftPointPixel.y) / (currentPixel.x - leftPointPixel.x);
-        const b1 = currentPixel.y - k1 * currentPixel.x;
-        // console.log('k1 ===>', k1);
-        // console.log('b1 ===>', b1);
-        // console.log('验证', leftPointPixel.y - k1 * leftPointPixel.x - b1);
-
         // 下一个左节点的下一个左节点的 xy 坐标
         const leftNextIdx = leftIdx - 1 >= 0 ? leftIdx - 1 : this.len;
         const leftNextPoint = this.points[leftNextIdx];
@@ -181,75 +161,49 @@ class ControlPoint {
         // console.log('leftNextPointPixel ===>', leftNextPointPixel);
         // this.map.add(new AMap.Marker({ position: leftNextPoint.getCenter() }));
 
-        // y2 = k2 * x2 + b2 （ps: 两条直线互相垂直，则有 k1 * k2 = -1）
-        // const k2 = (leftNextPointPixel.y - leftPointPixel.y) / (leftNextPointPixel.x - leftPointPixel.x);
+        // y1 = k1 * x1 + b1 （ps: 两条直线互相垂直，则有 k1 * k2 = -1）
+        const k1 = (leftNextPointPixel.y - leftPointPixel.y) / (leftNextPointPixel.x - leftPointPixel.x);
+        const b1 = leftNextPointPixel.y - k1 * leftNextPointPixel.x;
+        // console.log('updateNextLeftPoint.k1 ===>', k1);
+        // console.log('updateNextLeftPoint.b1 ===>', b1);
+
+        // y2 = k2 * x2 + b2
         const k2 = -1 / k1;
-        let b2 = leftNextPointPixel.y - k2 * leftNextPointPixel.x;
-        // console.log('k2 ===>', k2);
-        // console.log('b2 ===>', b2);
-        const validateVal = leftPointPixel.y - k2 * leftPointPixel.x - b2;
-        console.log('updateNextLeftPoint 验证', validateVal);
-        if (Math.abs(validateVal) >= 0.1) {
-            console.log('=== updateNextLeftPoint 矫正 b2 值 ===');
-            console.log(`矫正前 b2 = ${b2}`);
-            // if (validateVal > 0) {
-            //     b2 -= validateVal;
-            // }
-            // if (validateVal < 0) {
-            //     b2 += validateVal;
-            // }
-            b2 += validateVal;
-            console.log(`矫正后 b2 = ${b2}`);
-            console.log('updateNextLeftPoint 矫正后验证', leftPointPixel.y - k2 * leftPointPixel.x - b2);
+        const b2 = endPixel.y - k2 * endPixel.x;
+        // console.log('updateNextLeftPoint.k2 ===>', k2);
+        // console.log('updateNextLeftPoint.b2 ===>', b2);
+
+        // 设交点坐标为：x,y
+        // 则有： y1 = k1 * x + b1
+        // 则有： y2 = k2 * x + b2
+        // 则有： k1 * x + b1 = k2 * x + b2
+        // 平行 x轴 的直线，k = 0
+        // 平行 y轴 的直线，k = 无穷大
+        let x: number;
+        if (k1 === 0) {
+            x = endPixel.x;
+        } else if (!Number.isFinite(k1) || k1 > Number.MAX_SAFE_INTEGER || k1 < Number.MIN_SAFE_INTEGER) {
+            x = leftPointPixel.x;
+        } else {
+            x = (b2 - b1) / (k1 - k2);
         }
 
-        // y3 = k3 * x3 + b3
-        const k3 = k1;
-        const b3 = endPixel.y - k3 * endPixel.x;
-        // console.log('k3 ===>', k3);
-        // console.log('b3 ===>', b3);
-
-        // 从 xAxis = 0 开始穷举交点位置（可以考虑更优算法）
-        let s: number[] = [];
-        let x = 0;
-        while (x < this.xAxisMax) {
-            const y = k2 * x + b2;
-            const val = y - k3 * x - b3;
-
-            // val 趋向于 [-1, 1] 之间时，则标记为可用
-            if (-2 <= val && val <= 2) {
-                s.push(val);
-                // 在穷举，使其无限趋向于 0 
-                if (-0.01 <= val && val <= 0.01) {
-                    console.log('updateNextLeftPoint.val ===>', val);
-                    // 在穷举，使其无限趋向于 0 
-                    const pixel = new AMap.Pixel(x, y);
-                    // this.map.add(new AMap.Marker({ position: this.map.containerToLngLat(pixel) }));
-                    this.dispatch(leftPoint, pixel, data.originEvent);
-                    break;
-                } else {
-                    x += 0.005;
-                }
-            } else {
-                x += 0.5;
-            }
+        let y: number;
+        if (k1 === 0) {
+            y = leftPointPixel.y;
+        } else if (!Number.isFinite(k1)) {
+            y = endPixel.y;
+        } else {
+            y = k1 * x + b1;
         }
+        // console.log('updateNextLeftPoint.x ===>', x);
+        // console.log('updateNextLeftPoint.y ===>', y);
 
-        if (x >= this.xAxisMax) {
-            console.log(s);
-            console.error('updateNextLeftPoint ===> 未找到交点');
-
-            console.log('k1 ===>', k1);
-            console.log('b1 ===>', b1);
-            console.log('验证', leftPointPixel.y - k1 * leftPointPixel.x - b1);
-
-            console.log('k2 ===>', k2);
-            console.log('b2 ===>', b2);
-            console.log('验证', leftPointPixel.y - k2 * leftPointPixel.x - b2);
-
-            console.log('k3 ===>', k3);
-            console.log('b3 ===>', b3);
-        }
+        const nextLeftPointPixel = new AMap.Pixel(x, y);
+        // const nextLeftPoint = this.map.containerToLngLat(nextLeftPointPixel);
+        // const nextRightPointCenter = [nextLeftPoint.lng, nextLeftPoint.lat];
+        // this.map.add(new AMap.Marker({ position: nextLeftPoint }));
+        this.dispatch(leftPoint, nextLeftPointPixel, data.originEvent);
     }
 
     /**
@@ -263,18 +217,6 @@ class ControlPoint {
         // console.log('rightPointPixel ===>', rightPointPixel);
         // this.map.add(new AMap.Marker({ position: rightPoint.getCenter() }));
 
-        // 当前操作点 xy 坐标
-        const currentPixel = this.map.lngLatToContainer(this.center);
-        // console.log('currentPixel ===>', currentPixel);
-        // this.map.add(new AMap.Marker({ position: this.center }));
-
-        // y1 = k1 * x1 + b1
-        const k1 = (currentPixel.y - rightPointPixel.y) / (currentPixel.x - rightPointPixel.x);
-        const b1 = currentPixel.y - k1 * currentPixel.x;
-        // console.log('k1 ===>', k1);
-        // console.log('b1 ===>', b1);
-        // console.log('验证', rightPointPixel.y - k1 * rightPointPixel.x - b1);
-
         // 下一个节点的下一个节点的 xy 坐标
         const rightNextIdx = rightIdx + 1 <= this.len ? rightIdx + 1 : 0;
         const rightNextPoint = this.points[rightNextIdx];
@@ -282,68 +224,49 @@ class ControlPoint {
         // console.log('rightNextPointPixel ===>', rightNextPointPixel);
         // this.map.add(new AMap.Marker({ position: rightNextPoint.getCenter() }));
 
-        // y2 = k2 * x2 + b2 （ps: 两条直线互相垂直，则有 k1 * k2 = -1）
-        // const k2 = (rightNextPointPixel.y - rightPointPixel.y) / (rightNextPointPixel.x - rightPointPixel.x);
+        // y1 = k1 * x1 + b1 （ps: 两条直线互相垂直，则有 k1 * k2 = -1）
+        const k1 = (rightNextPointPixel.y - rightPointPixel.y) / (rightNextPointPixel.x - rightPointPixel.x);
+        const b1 = rightNextPointPixel.y - k1 * rightNextPointPixel.x;
+        // console.log('updateNextRightPoint.k1 ===>', k1);
+        // console.log('updateNextRightPoint.b1 ===>', b1);
+
+        // y2 = k2 * x2 + b2
         const k2 = -1 / k1;
-        let b2 = rightNextPointPixel.y - k2 * rightNextPointPixel.x;
-        // console.log('k2 ===>', k2);
-        // console.log('b2 ===>', b2);
-        // 矫正 b2 值 
-        const validateVal = rightPointPixel.y - k2 * rightPointPixel.x - b2;
-        console.log('updateNextRightPoint 验证', validateVal);
-        if (Math.abs(validateVal) >= 0.01) {
-            console.log('=== updateNextRightPoint 矫正 b2 值 ===');
-            console.log(`矫正前 b2 = ${b2}`);
-            b2 += validateVal;
-            console.log(`矫正后 b2 = ${b2}`);
+        const b2 = endPixel.y - k2 * endPixel.x;
+        // console.log('updateNextRightPoint.k2 ===>', k2);
+        // console.log('updateNextRightPoint.b2 ===>', b2);
+
+        // 设交点坐标为：x,y
+        // 则有： y1 = k1 * x + b1
+        // 则有： y2 = k2 * x + b2
+        // 则有： k1 * x + b1 = k2 * x + b2
+        // 平行 x轴 的直线，k = 0
+        // 平行 y轴 的直线，k = 无穷大
+        let x: number;
+        if (k1 === 0) {
+            x = endPixel.x;
+        } else if (!Number.isFinite(k1) || k1 > Number.MAX_SAFE_INTEGER || k1 < Number.MIN_SAFE_INTEGER) {
+            x = rightPointPixel.x;
+        } else {
+            x = (b2 - b1) / (k1 - k2);
         }
 
-        // y3 = k3 * x3 + b3
-        const k3 = k1;
-        const b3 = endPixel.y - k3 * endPixel.x;
-        // console.log('k3 ===>', k3);
-        // console.log('b3 ===>', b3);
-
-        // 从 xAxis = 0 开始穷举交点位置（可以考虑更优算法：二分法）
-        const s: number[] = [];
-        let x = 0;
-        while (x < this.xAxisMax) {
-            const y = k2 * x + b2;
-            const val = y - k3 * x - b3;
-
-            // val 趋向于 [-1, 1] 之间时，则标记为可用
-            if (-2 < val && val < 2) {
-                s.push(val);
-                // 在穷举，使其无限趋向于 0 
-                if (-0.01 <= val && val <= 0.01) {
-                    console.log('updateNextRightPoint.val ===>', val);
-                    const pixel = new AMap.Pixel(x, y);
-                    // this.map.add(new AMap.Marker({ position: this.map.containerToLngLat(pixel) }));
-                    this.dispatch(rightPoint, pixel, data.originEvent);
-                    break;
-                } else {
-                    x += 0.005;
-                }
-            } else {
-                x += 0.5;
-            }
+        let y: number;
+        if (k1 === 0) {
+            y = rightPointPixel.y;
+        } else if (!Number.isFinite(k1)) {
+            y = endPixel.y;
+        } else {
+            y = k1 * x + b1;
         }
-        if (x >= this.xAxisMax) {
-            console.log(s);
-            console.error('updateNextRightPoint ===> 未找到交点');
+        // console.log('updateNextRightPoint.x ===>', x);
+        // console.log('updateNextRightPoint.y ===>', y);
 
-            console.log('k1 ===>', k1);
-            console.log('b1 ===>', b1);
-            console.log('验证', rightPointPixel.y - k1 * rightPointPixel.x - b1);
-
-            console.log('k2 ===>', k2);
-            console.log('b2 ===>', b2);
-            console.log('验证', rightPointPixel.y - k2 * rightPointPixel.x - b2);
-
-            console.log('k3 ===>', k3);
-            console.log('b3 ===>', b3);
-            console.log('验证', endPixel.y - k3 * endPixel.x - b3);
-        }
+        const nextRightPointPixel = new AMap.Pixel(x, y);
+        // const nextRightPoint = this.map.containerToLngLat(nextRightPointPixel);
+        // const nextRightPointCenter = [nextRightPoint.lng, nextRightPoint.lat];
+        // this.map.add(new AMap.Marker({ position: nextRightPoint }));
+        this.dispatch(rightPoint, nextRightPointPixel, data.originEvent);
     }
 
     dispatch(point: AMap.CircleMarker, pixel: AMap.Pixel, originEvent) {

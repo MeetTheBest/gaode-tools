@@ -57,7 +57,7 @@ export default class PolygonEditorRanging {
      */
     private getPolygonEditorTargetPaths() {
         if (!this.polygonEditor) return [] as Common.IPath;
-        return (this.polygonEditor.getTarget()!.getPath() ?? []) as Common.IPath;
+        return (this.polygonEditor?.getTarget?.()!.getPath() ?? []) as Common.IPath;
     }
 
     /**

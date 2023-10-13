@@ -156,10 +156,10 @@ declare class ControlPoint {
         lngLatToCoords(lnglat: AMap.LngLat | [number, number]): [number, number];
         coordsToLngLat(coords: [number, number]): AMap.LngLat;
         lngLatToContainer(lnglat: AMap.LngLat | number[]): AMap.Pixel;
-        containerToLngLat(pixel: AMap.Pixel | number[]): AMap.LngLat;
+        containerToLngLat(pixel: number[] | AMap.Pixel): AMap.LngLat;
         coordToContainer(coord: [number, number]): [number, number];
-        containerToCoord(pixel: AMap.Pixel | number[]): number[];
-        pixelToLngLat(pixel: AMap.Pixel | number[], z?: number | undefined): AMap.LngLat;
+        containerToCoord(pixel: number[] | AMap.Pixel): number[];
+        pixelToLngLat(pixel: number[] | AMap.Pixel, z?: number | undefined): AMap.LngLat;
         lngLatToPixel(lnglat: AMap.LngLat | number[], z?: number | undefined): AMap.Pixel;
         getResolution(point?: AMap.LngLat | undefined): number;
         getScale(dpi: number): number;
