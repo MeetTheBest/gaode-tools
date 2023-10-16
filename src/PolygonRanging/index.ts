@@ -66,7 +66,7 @@ export default class PolygonRanging {
      * @returns 
      */
     public start(polygon: AMap.Polygon) {
-        if (!polygon || this.polygon) return;
+        if (!polygon) return;
 
         this.polygon = polygon;
         this.lines!.createLinesByPaths(this.polygon.getPath() as Common.IPath);
@@ -91,8 +91,9 @@ export default class PolygonRanging {
     }
 
     destroyPolygonEvents() {
-        if (!this.polygon) return;
         this.polygon!.off('dragend', this.onDragEnd);
+        // @ts-ignore
+        this.polygon!.on('rotateEnd', this.onRotateEndEnd);
     }
 
     public close() {
@@ -152,10 +153,10 @@ export default class PolygonRanging {
     }
 
     public destroy() {
-        this.polygon = null;
         this.stop();
         this.removeLineDistanceText();
         this.destroyPolygonEvents();
+        this.polygon = null;
         return this;
     }
 }

@@ -69,13 +69,13 @@ class LikeRectangle extends Event implements ILikeRectangle {
         const HALF_HEIGHT = formatNumber(this.height / 2);
 
         // 左上
-        const leftTop = centerPoint.offset(-HALF_WIDTH / 2, HALF_HEIGHT / 2);
+        const leftTop = centerPoint.offset(-HALF_WIDTH, HALF_HEIGHT);
         // 右上
-        const rightTop = centerPoint.offset(HALF_WIDTH / 2, HALF_HEIGHT / 2);
+        const rightTop = centerPoint.offset(HALF_WIDTH, HALF_HEIGHT);
         // 左下
-        const leftBottom = centerPoint.offset(-HALF_WIDTH / 2, -HALF_HEIGHT / 2);
+        const leftBottom = centerPoint.offset(-HALF_WIDTH, -HALF_HEIGHT);
         // 右下
-        const rightBottom = centerPoint.offset(HALF_WIDTH / 2, -HALF_HEIGHT / 2);
+        const rightBottom = centerPoint.offset(HALF_WIDTH, -HALF_HEIGHT);
 
         return {
             leftTop: [leftTop.lng, leftTop.lat] as AMap.Vector2,
