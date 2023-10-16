@@ -1415,13 +1415,13 @@ class Jd {
    * @returns 
    */
   start(r) {
-    !r || this.polygon || (this.polygon = r, this.lines.createLinesByPaths(this.polygon.getPath()), this.map.on("mousemove", this.onPolygonRanging), this.registryPolygonEvents());
+    r && (this.polygon = r, this.lines.createLinesByPaths(this.polygon.getPath()), this.map.on("mousemove", this.onPolygonRanging), this.registryPolygonEvents());
   }
   registryPolygonEvents() {
     this.polygon && (this.draggable && this.polygon.on("dragend", this.onDragEnd), this.rotatable && "likeRectangle" in this.polygon && this.polygon.on("rotateEnd", this.onRotateEndEnd));
   }
   destroyPolygonEvents() {
-    this.polygon && this.polygon.off("dragend", this.onDragEnd);
+    this.polygon.off("dragend", this.onDragEnd), this.polygon.on("rotateEnd", this.onRotateEndEnd);
   }
   close() {
     this.stop();
@@ -1437,7 +1437,7 @@ class Jd {
     (r = this.lineLengthText) == null || r.remove(), this.lineLengthText = null;
   }
   destroy() {
-    return this.polygon = null, this.stop(), this.removeLineDistanceText(), this.destroyPolygonEvents(), this;
+    return this.stop(), this.removeLineDistanceText(), this.destroyPolygonEvents(), this.polygon = null, this;
   }
 }
 class Ji {
@@ -11873,7 +11873,7 @@ class E1 extends Ji {
     this.rotatableIns.on("rotateStart", (n) => e.emit("rotateStart", n)), this.rotatableIns.on("rotate", (n) => e.emit("rotate", n)), this.rotatableIns.on("rotateEnd", (n) => e.emit("rotateEnd", n));
   }
   calcPoints(e) {
-    const [n, i] = e || this.center, a = new AMap.LngLat(n, i), o = Ya(this.width / 2), s = Ya(this.height / 2), u = a.offset(-o / 2, s / 2), l = a.offset(o / 2, s / 2), f = a.offset(-o / 2, -s / 2), c = a.offset(o / 2, -s / 2);
+    const [n, i] = e || this.center, a = new AMap.LngLat(n, i), o = Ya(this.width / 2), s = Ya(this.height / 2), u = a.offset(-o, s), l = a.offset(o, s), f = a.offset(-o, -s), c = a.offset(o, -s);
     return {
       leftTop: [u.lng, u.lat],
       rightTop: [l.lng, l.lat],
