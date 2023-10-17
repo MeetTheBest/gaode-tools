@@ -1421,7 +1421,8 @@ class Jd {
     this.polygon && (this.draggable && this.polygon.on("dragend", this.onDragEnd), this.rotatable && "likeRectangle" in this.polygon && this.polygon.on("rotateEnd", this.onRotateEndEnd));
   }
   destroyPolygonEvents() {
-    this.polygon.off("dragend", this.onDragEnd), this.polygon.on("rotateEnd", this.onRotateEndEnd);
+    var r, e, n, i;
+    this.polygon && ((e = (r = this.polygon).off) == null || e.call(r, "dragend", this.onDragEnd), (i = (n = this.polygon).off) == null || i.call(n, "rotateEnd", this.onRotateEndEnd));
   }
   close() {
     this.stop();

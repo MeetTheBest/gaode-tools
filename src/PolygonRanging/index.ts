@@ -91,9 +91,10 @@ export default class PolygonRanging {
     }
 
     destroyPolygonEvents() {
-        this.polygon!.off('dragend', this.onDragEnd);
+        if (!this.polygon) return;
+        this.polygon!.off?.('dragend', this.onDragEnd);
         // @ts-ignore
-        this.polygon!.on('rotateEnd', this.onRotateEndEnd);
+        this.polygon!.off?.('rotateEnd', this.onRotateEndEnd);
     }
 
     public close() {
