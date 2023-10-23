@@ -1399,7 +1399,7 @@ class Jd {
   immediateActive() {
     var e;
     const r = (e = this.opts) == null ? void 0 : e.target;
-    this.immediate && r instanceof AMap.Polygon && this.open(r);
+    this.immediate && r.CLASS_NAME === "Overlay.Polygon" && this.open(r);
   }
   /**
    * 开始边线测距
@@ -1415,7 +1415,9 @@ class Jd {
    * @returns 
    */
   start(r) {
-    r && (this.polygon = r, this.lines.createLinesByPaths(this.polygon.getPath()), this.map.on("mousemove", this.onPolygonRanging), this.registryPolygonEvents());
+    if (!r)
+      return;
+    this.polygon = r, this.lines.createLinesByPaths(this.polygon.getPath()), this.map.hasEvents("mousemove", this.onPolygonRanging) || this.map.on("mousemove", this.onPolygonRanging), this.registryPolygonEvents();
   }
   registryPolygonEvents() {
     this.polygon && (this.draggable && this.polygon.on("dragend", this.onDragEnd), this.rotatable && "likeRectangle" in this.polygon && this.polygon.on("rotateEnd", this.onRotateEndEnd));

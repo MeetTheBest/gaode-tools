@@ -45,8 +45,8 @@ export default class PolygonRanging {
      * 立刻激活
      */
     private immediateActive() {
-        const target = this.opts?.target;
-        if (this.immediate && target instanceof AMap.Polygon) {
+        const target = this.opts?.target as AMap.Polygon;
+        if (this.immediate && target.CLASS_NAME === 'Overlay.Polygon') {
             this.open(target);
         }
     }
@@ -71,7 +71,10 @@ export default class PolygonRanging {
         this.polygon = polygon;
         this.lines!.createLinesByPaths(this.polygon.getPath() as Common.IPath);
         // 鼠标移动，判断是否命中了计算 PolygonEditor 的计算处理
-        this.map.on('mousemove', this.onPolygonRanging);
+        const hasEvent = this.map.hasEvents('mousemove', this.onPolygonRanging);
+        if (!hasEvent) {
+            this.map.on('mousemove', this.onPolygonRanging);
+        }
 
         this.registryPolygonEvents();
     }
