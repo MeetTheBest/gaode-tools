@@ -1,5 +1,7 @@
-import { throttle } from 'lodash-es';
+import { isFinite } from 'lodash-es';
 import LikeRectangleEditor from ".";
+import { isLimitMaxInteger } from '../utils/index';
+import { K_DOWN_LIMIT_COUNT } from '../constants/common';
 
 class ControlPoint {
     point!: AMap.CircleMarker;
@@ -33,23 +35,12 @@ class ControlPoint {
         return this.context.map;
     }
 
-    get xAxisMax() {
-        return document.body.clientWidth;
-    }
-
-    get yAxisMax() {
-        return document.body.clientHeight;
-    }
-
-
     enable() {
         if (this.isEnabled) return;
 
         this.isEnabled = true;
         this.setCursorPointer('move');
         this.registryEvent();
-
-        // this.toContainer2({} as AMap.Pixel, {});
     }
 
     disable() {
@@ -69,7 +60,7 @@ class ControlPoint {
         this.onMouseOut = this.onMouseOut.bind(this);
 
         this.onDragStart = this.onDragStart.bind(this);
-        this.onDragging = throttle(this.onDragging.bind(this), 4);
+        this.onDragging = this.onDragging.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
 
         this.defaultRegistryEvent();
@@ -115,14 +106,14 @@ class ControlPoint {
 
     onDragging(data: IObject) {
         const { pixel } = data;
-        // console.log(`点位${this.extData.idx} 移动中`);
-        // delay(this.context.onChange, DELAY_TIME, data);
+        console.log(`点位${this.extData.idx} 移动中`);
 
         // 更新下一个左节点的位置
         this.updateNextLeftPoint(pixel, data);
 
         // 更新下一个右节点的位置
         this.updateNextRightPoint(pixel, data);
+
         this.context.onDragging(data);
     }
 
@@ -149,17 +140,20 @@ class ControlPoint {
         const leftPoint = this.points[leftIdx];
         const leftPointPixel = this.map.lngLatToContainer(leftPoint.getCenter());
         // console.log('leftPointPixel ===>', leftPointPixel);
-        // this.map.add(new AMap.Marker({ position: leftPoint.getCenter() }));
+        // this.leftPointMarker = new AMap.Marker({ position: leftPoint.getCenter() });
 
         // 下一个左节点的下一个左节点的 xy 坐标
         const leftNextIdx = leftIdx - 1 >= 0 ? leftIdx - 1 : this.len;
         const leftNextPoint = this.points[leftNextIdx];
         const leftNextPointPixel = this.map.lngLatToContainer(leftNextPoint.getCenter());
         // console.log('leftNextPointPixel ===>', leftNextPointPixel);
-        // this.map.add(new AMap.Marker({ position: leftNextPoint.getCenter() }));
+        // this.leftPointMarker = new AMap.Marker({ position: leftNextPoint.getCenter() });
 
         // y1 = k1 * x1 + b1 （ps: 两条直线互相垂直，则有 k1 * k2 = -1）
-        const k1 = (leftNextPointPixel.y - leftPointPixel.y) / (leftNextPointPixel.x - leftPointPixel.x);
+        let k1 = (leftNextPointPixel.y - leftPointPixel.y) / (leftNextPointPixel.x - leftPointPixel.x);
+        // 如果 k1 小于 K_DOWN_LIMIT_COUNT
+        // 这里为啥要把精度控制到 K_DOWN_LIMIT_COUNT ，因为在页面中可操作得到的最小 k 值 = 1 / 屏幕宽度，0.00000001 只是兜底更小的值
+        k1 = Math.abs(k1) < K_DOWN_LIMIT_COUNT ? 0 : k1;
         const b1 = leftNextPointPixel.y - k1 * leftNextPointPixel.x;
         // console.log('updateNextLeftPoint.k1 ===>', k1);
         // console.log('updateNextLeftPoint.b1 ===>', b1);
@@ -170,6 +164,14 @@ class ControlPoint {
         // console.log('updateNextLeftPoint.k2 ===>', k2);
         // console.log('updateNextLeftPoint.b2 ===>', b2);
 
+        const isLimit = !isFinite(k1)
+            || isLimitMaxInteger(k1)
+            || !isFinite(k2)
+            || isLimitMaxInteger(k2)
+            || !isFinite(b1)
+            || isLimitMaxInteger(b1)
+            || !isFinite(b2)
+            || isLimitMaxInteger(b2);
         // 设交点坐标为：x,y
         // 则有： y1 = k1 * x + b1
         // 则有： y2 = k2 * x + b2
@@ -179,7 +181,7 @@ class ControlPoint {
         let x: number;
         if (k1 === 0) {
             x = endPixel.x;
-        } else if (!Number.isFinite(k1) || k1 > Number.MAX_SAFE_INTEGER || k1 < Number.MIN_SAFE_INTEGER) {
+        } else if (isLimit) {
             x = leftPointPixel.x;
         } else {
             x = (b2 - b1) / (k1 - k2);
@@ -188,7 +190,7 @@ class ControlPoint {
         let y: number;
         if (k1 === 0) {
             y = leftPointPixel.y;
-        } else if (!Number.isFinite(k1)) {
+        } else if (isLimit) {
             y = endPixel.y;
         } else {
             y = k1 * x + b1;
@@ -207,6 +209,7 @@ class ControlPoint {
      * 更新下一个右节点位置
      */
     updateNextRightPoint(endPixel: AMap.Pixel, data: IObject) {
+        // console.log('endPixel ===>', endPixel);
         // 下一个节点的 xy 坐标
         const rightIdx = this.idx + 1 <= this.len ? this.idx + 1 : 0;
         const rightPoint = this.points[rightIdx];
@@ -222,7 +225,9 @@ class ControlPoint {
         // this.map.add(new AMap.Marker({ position: rightNextPoint.getCenter() }));
 
         // y1 = k1 * x1 + b1 （ps: 两条直线互相垂直，则有 k1 * k2 = -1）
-        const k1 = (rightNextPointPixel.y - rightPointPixel.y) / (rightNextPointPixel.x - rightPointPixel.x);
+        let k1 = (rightNextPointPixel.y - rightPointPixel.y) / (rightNextPointPixel.x - rightPointPixel.x);
+        // 如果 k1 小于 K_DOWN_LIMIT_COUNT
+        k1 = Math.abs(k1) < K_DOWN_LIMIT_COUNT ? 0 : k1;
         const b1 = rightNextPointPixel.y - k1 * rightNextPointPixel.x;
         // console.log('updateNextRightPoint.k1 ===>', k1);
         // console.log('updateNextRightPoint.b1 ===>', b1);
@@ -233,6 +238,15 @@ class ControlPoint {
         // console.log('updateNextRightPoint.k2 ===>', k2);
         // console.log('updateNextRightPoint.b2 ===>', b2);
 
+        const isLimit = !isFinite(k1)
+            || isLimitMaxInteger(k1)
+            || !isFinite(k2)
+            || isLimitMaxInteger(k2)
+            || !isFinite(b1)
+            || isLimitMaxInteger(b1)
+            || !isFinite(b2)
+            || isLimitMaxInteger(b2);
+
         // 设交点坐标为：x,y
         // 则有： y1 = k1 * x + b1
         // 则有： y2 = k2 * x + b2
@@ -242,7 +256,7 @@ class ControlPoint {
         let x: number;
         if (k1 === 0) {
             x = endPixel.x;
-        } else if (!Number.isFinite(k1) || k1 > Number.MAX_SAFE_INTEGER || k1 < Number.MIN_SAFE_INTEGER) {
+        } else if (isLimit) {
             x = rightPointPixel.x;
         } else {
             x = (b2 - b1) / (k1 - k2);
@@ -251,7 +265,7 @@ class ControlPoint {
         let y: number;
         if (k1 === 0) {
             y = rightPointPixel.y;
-        } else if (!Number.isFinite(k1)) {
+        } else if (isLimit) {
             y = endPixel.y;
         } else {
             y = k1 * x + b1;

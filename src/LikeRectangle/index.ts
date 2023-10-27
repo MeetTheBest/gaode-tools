@@ -16,6 +16,7 @@ class LikeRectangle extends Event implements ILikeRectangle {
     likeRectangle!: AMap.Polygon & IEnhanceProperty;
     rotatableIns!: Rotatable;
     likeRectangleDestroy!: () => void;
+    likeRectangleRawSetOptions!: (optsArg: AMap.PolygonOptions) => void;
 
     constructor(opts: ILikeRectangleOptions) {
         super();
@@ -43,8 +44,28 @@ class LikeRectangle extends Event implements ILikeRectangle {
     }
 
     enhanceMethods() {
+        // 重写销毁方法
         this.likeRectangleDestroy = this.likeRectangle.destroy.bind(this.likeRectangle);
         this.likeRectangle.destroy = this.destroy.bind(this);
+
+        // 重写 setOptions 方法
+        this.likeRectangleRawSetOptions = this.likeRectangle.setOptions.bind(this.likeRectangle);
+        this.likeRectangle.setOptions = this.likeRectangleSetOptions.bind(this);
+    }
+
+    likeRectangleSetOptions(optsArg: AMap.PolygonOptions & ILikeRectangleOptions): void {
+        const { rotatable } = optsArg;
+        this.likeRectangle.setOptions.bind(this.likeRectangle, optsArg);
+
+        // 注册旋转
+        if (rotatable) {
+            this.opts.rotatable = true;
+            this.registerRotatable();
+        } else {
+            // 销毁旋转
+            this.opts.rotatable = false;
+            this.rotatableIns?.close?.();
+        }
     }
 
     destroy() {
@@ -54,6 +75,7 @@ class LikeRectangle extends Event implements ILikeRectangle {
 
     registerRotatable() {
         if (!this.opts.rotatable) return;
+
         this.rotatableIns = new Rotatable(this.likeRectangle as unknown as LikeRectangle & AMap.Polygon);
         const target = this.likeRectangle;
         this.rotatableIns.on('rotateStart', (event) => target.emit('rotateStart', event));

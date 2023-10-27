@@ -19,6 +19,13 @@ export const formatNumber = (num: number, precision = 2) => {
 }
 
 /**
+ * 是否大于最大安全数
+ * @param n
+ * @returns 
+ */
+export const isLimitMaxInteger = (n: number) => Math.abs(n) > Number.MAX_SAFE_INTEGER;
+
+/**
  * 创建文本
  * @param text 
  * @param style 自定义文本样式
