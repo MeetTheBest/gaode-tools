@@ -405,8 +405,6 @@ declare class ControlPoint {
         emit(type: AMap.EventType, data?: any): any;
         getEvents(): Record<string, any[]>;
     };
-    get xAxisMax(): number;
-    get yAxisMax(): number;
     enable(): void;
     disable(): void;
     setCursorPointer(cursor: string): void;

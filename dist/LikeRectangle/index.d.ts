@@ -14,9 +14,11 @@ declare class LikeRectangle extends Event implements ILikeRectangle {
     likeRectangle: AMap.Polygon & IEnhanceProperty;
     rotatableIns: Rotatable;
     likeRectangleDestroy: () => void;
+    likeRectangleRawSetOptions: (optsArg: AMap.PolygonOptions) => void;
     constructor(opts: ILikeRectangleOptions);
     bindOptsToSelf(opts: ILikeRectangleOptions): void;
     enhanceMethods(): void;
+    likeRectangleSetOptions(optsArg: AMap.PolygonOptions & ILikeRectangleOptions): void;
     destroy(): void;
     registerRotatable(): void;
     calcPoints(center?: AMap.Vector2): {
