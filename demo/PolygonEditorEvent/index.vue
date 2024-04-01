@@ -79,7 +79,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-	polygonEditorEventIns!.destroy();
+	polygonEditorEventIns?.destroy?.();
 });
 </script>
 

@@ -135,6 +135,7 @@ class ControlPoint {
      * 更新下一个左节点位置
      */
     updateNextLeftPoint(endPixel: AMap.Pixel, data: IObject) {
+        // console.log(data.type);
         // 左节点的 xy 坐标
         const leftIdx = this.idx - 1 >= 0 ? this.idx - 1 : this.len;
         const leftPoint = this.points[leftIdx];
@@ -150,26 +151,33 @@ class ControlPoint {
         // this.leftPointMarker = new AMap.Marker({ position: leftNextPoint.getCenter() });
 
         // y1 = k1 * x1 + b1 （ps: 两条直线互相垂直，则有 k1 * k2 = -1）
+        console.log('leftPointPixel ===>', { x: leftPointPixel.x, y: leftPointPixel.y });
+        console.log('leftNextPointPixel ===>', { x: leftNextPointPixel.x, y: leftNextPointPixel.y });
         let k1 = (leftNextPointPixel.y - leftPointPixel.y) / (leftNextPointPixel.x - leftPointPixel.x);
         // 如果 k1 小于 K_DOWN_LIMIT_COUNT
         // 这里为啥要把精度控制到 K_DOWN_LIMIT_COUNT ，因为在页面中可操作得到的最小 k 值 = 1 / 屏幕宽度，0.00000001 只是兜底更小的值
         k1 = Math.abs(k1) < K_DOWN_LIMIT_COUNT ? 0 : k1;
         const b1 = leftNextPointPixel.y - k1 * leftNextPointPixel.x;
-        // console.log('updateNextLeftPoint.k1 ===>', k1);
-        // console.log('updateNextLeftPoint.b1 ===>', b1);
+        console.log('updateNextLeftPoint.k1 ===>', k1);
+        console.log('updateNextLeftPoint.b1 ===>', b1);
 
         // y2 = k2 * x2 + b2
         const k2 = -1 / k1;
         const b2 = endPixel.y - k2 * endPixel.x;
-        // console.log('updateNextLeftPoint.k2 ===>', k2);
-        // console.log('updateNextLeftPoint.b2 ===>', b2);
+        console.log('updateNextLeftPoint.k2 ===>', k2);
+        console.log('updateNextLeftPoint.b2 ===>', b2);
 
-        const isLimit = !isFinite(k1)
+        const isLimit =
+            Number.isNaN(k1)
+            || !isFinite(k1)
             || isLimitMaxInteger(k1)
+            || Number.isNaN(k2)
             || !isFinite(k2)
             || isLimitMaxInteger(k2)
+            || Number.isNaN(b1)
             || !isFinite(b1)
             || isLimitMaxInteger(b1)
+            || Number.isNaN(b2)
             || !isFinite(b2)
             || isLimitMaxInteger(b2);
         // 设交点坐标为：x,y
@@ -195,8 +203,9 @@ class ControlPoint {
         } else {
             y = k1 * x + b1;
         }
-        // console.log('updateNextLeftPoint.x ===>', x);
-        // console.log('updateNextLeftPoint.y ===>', y);
+        console.log('updateNextLeftPoint.x ===>', x);
+        console.log('updateNextLeftPoint.y ===>', y);
+        console.log('                      ');
 
         const nextLeftPointPixel = new AMap.Pixel(x, y);
         // const nextLeftPoint = this.map.containerToLngLat(nextLeftPointPixel);
@@ -238,12 +247,17 @@ class ControlPoint {
         // console.log('updateNextRightPoint.k2 ===>', k2);
         // console.log('updateNextRightPoint.b2 ===>', b2);
 
-        const isLimit = !isFinite(k1)
+        const isLimit =
+            Number.isNaN(k1)
+            || !isFinite(k1)
             || isLimitMaxInteger(k1)
+            || Number.isNaN(k2)
             || !isFinite(k2)
             || isLimitMaxInteger(k2)
+            || Number.isNaN(b1)
             || !isFinite(b1)
             || isLimitMaxInteger(b1)
+            || Number.isNaN(b2)
             || !isFinite(b2)
             || isLimitMaxInteger(b2);
 

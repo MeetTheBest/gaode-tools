@@ -47,6 +47,7 @@ const createPolygon = () => {
 	// 缩放地图到合适的视野级别
 	mapIns.setFitView();
 
+	console.log(polygon, '=polygon=');
 	return polygon;
 };
 
@@ -55,19 +56,19 @@ const createPolygonEditor = (polygon: AMap.Polygon | undefined) => {
 	polyEditor.open();
 };
 
-const createPolygonEditorRanging = () => {
-	polygonEditorRangingIns = new PolygonEditorRanging(mapIns!);
-	polygonEditorRangingIns.start(polyEditor!);
-};
+// const createPolygonEditorRanging = () => {
+// 	polygonEditorRangingIns = new PolygonEditorRanging(mapIns!);
+// 	polygonEditorRangingIns.start(polyEditor!);
+// };
 
 onMounted(() => {
 	registryMap();
 	createPolygonEditor(createPolygon());
-	createPolygonEditorRanging();
+	// createPolygonEditorRanging();
 });
 
 onUnmounted(() => {
-	polygonEditorRangingIns!.destroy();
+	polygonEditorRangingIns?.destroy?.();
 });
 </script>
 

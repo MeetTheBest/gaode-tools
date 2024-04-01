@@ -30,12 +30,15 @@ class Rotatable extends Event {
     }
 
     get mapIns() {
-        // @ts-ignore
-        return this.likeRectangleIns._map;
+        return this.likeRectangleIns.likeRectangle.map;
     }
 
     get center() {
         return this.likeRectangleIns.likeRectangle.center!;
+    }
+
+    get rotatable() {
+        return this.likeRectangleIns?.likeRectangle?.opts?.rotatable;
     }
 
     get draggable() {
@@ -44,6 +47,7 @@ class Rotatable extends Event {
     }
 
     open() {
+        if (!this.rotatable) return;
         this.calcMidPoint();
         this.calcInitAngle();
         this.setRotationLine();
@@ -97,7 +101,7 @@ class Rotatable extends Event {
     }
 
     genMarkerContent = (rotate = 0) => {
-        const w = 0.1;
+        const w = 0.05;
         const boxStyle = `width:${w}px; height:${w}px;`;
         rotate = Number.isNaN(+rotate) ? 0 : +rotate;
 
@@ -108,11 +112,11 @@ class Rotatable extends Event {
             style="${boxStyle}"
             data-rotatable-ref="${this.moveableElementId}"
             >
-            <div
-                data-rotatable-ref="${this.targetElementId}"
-                style="${boxStyle} transform: translate(0,0) rotate(${rotate}deg);">
-                ${dynamicDOM}
-            </div>
+                <div
+                    data-rotatable-ref="${this.targetElementId}"
+                    style="${boxStyle} transform: translate(0,0) rotate(${rotate}deg);">
+                    ${dynamicDOM}
+                </div>
             </div>
         `;
         return markerContent;
@@ -238,18 +242,10 @@ class Rotatable extends Event {
             [nextRightTopPoint.lng, nextRightTopPoint.lat],
             [nextRightBottomPoint.lng, nextRightBottomPoint.lat],
             [nextLeftBottomPoint.lng, nextLeftBottomPoint.lat],
-        ];
+        ] as AMap.LngLatLike[];
 
         // 更新点位
-        // @ts-ignore
         this.likeRectangleIns.setPath(nextPath);
-
-        // likeRectangleIns.likeRectangleIns.updatePoints(
-        // 	[nextLeftTopPoint.lng, nextLeftTopPoint.lat],
-        // 	[nextRightTopPoint.lng, nextRightTopPoint.lat],
-        // 	[nextRightBottomPoint.lng, nextRightBottomPoint.lat],
-        // 	[nextLeftBottomPoint.lng, nextLeftBottomPoint.lat],
-        // );
     };
 
     calcRotatePoint = (point: AMap.Pixel, center: AMap.Pixel, angle: number) => {
@@ -257,12 +253,12 @@ class Rotatable extends Event {
         const y1 = point.y;
         const x2 = center.x;
         const y2 = center.y;
-        const angleRad = (angle * Math.PI) / 180;
+        const angleRadian = (angle * Math.PI) / 180;
 
         const dx = x1 - x2;
         const dy = y1 - y2;
-        const newX = dx * Math.cos(angleRad) - dy * Math.sin(angleRad) + x2;
-        const newY = dx * Math.sin(angleRad) + dy * Math.cos(angleRad) + y2;
+        const newX = dx * Math.cos(angleRadian) - dy * Math.sin(angleRadian) + x2;
+        const newY = dx * Math.sin(angleRadian) + dy * Math.cos(angleRadian) + y2;
 
         return { x: newX, y: newY };
     }
@@ -276,7 +272,7 @@ class Rotatable extends Event {
     };
 
     calcMidPoint() {
-        const path = this.likeRectangleIns?.getPath?.()?.map((lngLat: any) => [lngLat.lng, lngLat.lat])! as unknown as number[];
+        const path = this.likeRectangleIns?.getPath?.()?.map((lngLat: any) => [lngLat.lng, lngLat.lat])! as number[][];
         if (!path.length || !this.mapIns) {
             throw new Error('likeRectangle or map is undefined');
         }
