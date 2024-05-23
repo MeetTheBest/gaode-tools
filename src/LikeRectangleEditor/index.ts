@@ -22,10 +22,10 @@ class LikeRectangleEditor {
     inEditing = false;
     isRestart = false;
 
-    constructor(map: AMap.Map, likeRectangle: LikeRectangle, opts: PolygonEditorOptions & IEnhanceEditorOptions) {
+    constructor(map: AMap.Map, likeRectangle: LikeRectangle, opts?: PolygonEditorOptions & IEnhanceEditorOptions) {
         this.map = map;
         this.likeRectangle = likeRectangle;
-        this.opts = { ...DEFAULT_OPTS, ...opts };
+        this.opts = { ...DEFAULT_OPTS, ...(opts || {}) };
 
         this.onChange = this.onChange.bind(this);
 
@@ -41,8 +41,7 @@ class LikeRectangleEditor {
     }
 
     get rotatable() {
-        // @ts-ignore
-        return this.likeRectangle?.rotatable;
+        return this.likeRectangle?.likeRectangle?.opts?.rotatable;
     }
 
     get rotatingCloseEditor() {
