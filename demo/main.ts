@@ -12,6 +12,7 @@ AMapLoader.load({
     plugins: [
         'AMap.MouseTool',
         'AMap.PolygonEditor',
+        'AMap.RectangleEditor'
     ]
 }).then((AMap) => {
     window.AMap = AMap;
