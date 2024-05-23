@@ -41,10 +41,21 @@ const createLikeRectangle = () => {
         draggable: true,
         cursor: "pointer",
         rotatable: true,
+        rotationOptions: {
+            controllerPointRadius: 18,
+        },
         bubble: true, // 事件穿透
     } as ILikeRectangleOptions;
 
     likeRectangleIns = new LikeRectangle(likeRectangleOptions);
+
+    // 旋转时，地图临时不可拖拽
+    likeRectangleIns.on("rotateStart", () =>
+        mapIns!.setStatus({ dragEnable: false })
+    );
+    likeRectangleIns.on("rotateEnd", () =>
+        mapIns!.setStatus({ dragEnable: true })
+    );
 
     mapIns.add([likeRectangleIns as unknown as AMap.Polygon]);
 
@@ -54,7 +65,8 @@ const createLikeRectangle = () => {
 const createLikeRectangleEditor = () => {
     likeRectangleEditorIns = new LikeRectangleEditor(
         mapIns!,
-        likeRectangleIns as LikeRectangle
+        likeRectangleIns as LikeRectangle,
+        { isMobile: true }
     );
     likeRectangleEditorIns.open();
 };
