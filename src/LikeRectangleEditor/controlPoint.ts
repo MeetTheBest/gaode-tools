@@ -7,11 +7,11 @@ class ControlPoint {
     point!: AMap.CircleMarker;
     points!: AMap.CircleMarker[];
     center!: AMap.LngLat;
-    context!: LikeRectangleEditor;
+    editor!: LikeRectangleEditor;
     isEnabled: boolean = false;
 
-    constructor(context: LikeRectangleEditor, point: AMap.CircleMarker, points: AMap.CircleMarker[]) {
-        this.context = context;
+    constructor(editor: LikeRectangleEditor, point: AMap.CircleMarker, points: AMap.CircleMarker[]) {
+        this.editor = editor;
         this.point = point;
         this.points = points;
 
@@ -32,7 +32,7 @@ class ControlPoint {
     }
 
     get map() {
-        return this.context.map;
+        return this.editor.map;
     }
 
     enable() {
@@ -72,8 +72,13 @@ class ControlPoint {
     }
 
     defaultRegistryEvent() {
-        this.point.on('mouseover', this.onMouseOver);
-        this.point.on('mouseout', this.onMouseOut);
+        const isMobile = this.editor.isMobile;
+
+        let mouseover = isMobile ? 'touchstart' : 'mouseover' as AMap.EventType;
+        let mouseout = isMobile ? 'touchend' : 'mouseout' as AMap.EventType;
+
+        this.point.on(mouseover, this.onMouseOver);
+        this.point.on(mouseout, this.onMouseOut);
     }
 
     registryEvent() {
@@ -96,12 +101,20 @@ class ControlPoint {
 
     onMouseOut() {
         console.log(`点位${this.extData.idx} 移出`);
-        this.disable();
+        // 移动端时，延迟处理
+        if (this.editor.isMobile) {
+            const timer = setTimeout(() => {
+                clearTimeout(timer)
+                this.disable();
+            }, 4);
+        } else {
+            this.disable();
+        }
     }
 
     onDragStart(data) {
         console.log(`点位${this.extData.idx} 移动开始`);
-        this.context.onDragStart(data);
+        this.editor.onDragStart(data);
     }
 
     onDragging(data: IObject) {
@@ -114,7 +127,7 @@ class ControlPoint {
         // 更新下一个右节点的位置
         this.updateNextRightPoint(pixel, data);
 
-        this.context.onDragging(data);
+        this.editor.onDragging(data);
     }
 
     onDragEnd(data: IObject) {
@@ -128,7 +141,7 @@ class ControlPoint {
 
         // 更新中心点
         this.center = target.getCenter();
-        this.context.onDragEnd(data);
+        this.editor.onDragEnd(data);
     }
 
     /**

@@ -9,6 +9,7 @@ import { IEnhanceProperty, IEnhanceEditorOptions } from './type';
 const DEFAULT_OPTS: IEnhanceEditorOptions = {
     rotatingCloseEditor: true,
     editingCloseRotator: true,
+    isMobile: false,
 };
 
 class LikeRectangleEditor {
@@ -51,6 +52,10 @@ class LikeRectangleEditor {
     get rotatableIns() {
         // @ts-ignore
         return this.likeRectangle?.likeRectangle?.rotatableIns;
+    }
+
+    get isMobile() {
+        return this.opts.isMobile;
     }
 
     /**

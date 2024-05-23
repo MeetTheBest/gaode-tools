@@ -84,9 +84,10 @@ class LikeRectangle extends Event implements ILikeRectangle {
     }
 
     registerRotatable() {
-        if (!this.opts.rotatable || this.rotatableIns) return;
+        const { rotatable, rotationOptions } = this.opts;
+        if (!rotatable || this.rotatableIns) return;
 
-        this.rotatableIns = new Rotatable(this.likeRectangle as unknown as LikeRectangle & AMap.Polygon);
+        this.rotatableIns = new Rotatable(this.likeRectangle as unknown as LikeRectangle & AMap.Polygon, rotationOptions);
         const target = this.likeRectangle;
         this.rotatableIns.on('rotateStart', (event) => target.emit('rotateStart', event));
         this.rotatableIns.on('rotate', (event) => target.emit('rotate', event));

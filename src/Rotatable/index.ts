@@ -1,14 +1,19 @@
 import { isFinite } from 'lodash-es'
 import Moveable, { makeAble } from 'moveable';
+
 import LikeRectangle from '../LikeRectangle';
 import Event from '../Event';
 import { uuid } from '../utils';
 import { computePointDistance } from '../utils/calc';
 import { isLimitMaxInteger } from '../utils/index';
 import { K_DOWN_LIMIT_COUNT } from '../constants/common';
+import type RotationOptions from './type';
+
+const DEFAULT_RADIUS = 10;
 
 class Rotatable extends Event {
     likeRectangleIns!: LikeRectangle & AMap.Polygon;
+    opts: RotationOptions;
     moveableIns: Moveable | null = null;
     rotationPointIns: AMap.Marker | null = null;
     midPoint!: AMap.LngLat;
@@ -19,13 +24,14 @@ class Rotatable extends Event {
     moveableElementId = `ID${uuid()}`;
     targetElementId = `ID${uuid()}`;
 
-    constructor(likeRectangle: LikeRectangle & AMap.Polygon) {
+    constructor(likeRectangle: LikeRectangle & AMap.Polygon, opts: RotationOptions = {}) {
         super();
         if (!likeRectangle) {
             throw new Error('likeRectangleIns is required');
         }
 
         this.likeRectangleIns = likeRectangle;
+        this.opts = opts;
         this.open();
     }
 
@@ -44,6 +50,11 @@ class Rotatable extends Event {
     get draggable() {
         const options = this.likeRectangleIns?.getOptions();
         return options.draggable;
+    }
+
+    get radius() {
+        const { controllerPointRadius = DEFAULT_RADIUS } = this.opts;
+        return Math.max(+`${controllerPointRadius}`.replace('px', '') || DEFAULT_RADIUS, DEFAULT_RADIUS);
     }
 
     open() {
@@ -143,8 +154,8 @@ class Rotatable extends Event {
                                 `translate(-50%, -100%)` +
                                 ` translate(${(pos1[0] + pos2[0]) / 2}px, ${(pos1[1] + pos2[1]) / 2}px)` +
                                 ` rotate(${rect.rotation}deg) translateY(-${self.offset}px)`,
-                            width: '10px',
-                            height: '10px',
+                            width: `${self.radius}px`,
+                            height: `${self.radius}px`,
                             cursor: 'move',
                             background: '#fff',
                             border: '2px solid #cc6666',
@@ -364,10 +375,9 @@ class Rotatable extends Event {
         const mitPointPixel = this.mapIns.lngLatToContainer(this.midPoint);
         const centerPixel = this.mapIns.lngLatToContainer(this.center);
 
-        // 默认多 50px 长度
-        // return (computePointDistance(mitPointPixel, centerPixel) || 100) + 50;
-        // 先直接放到中点上
-        return (computePointDistance(mitPointPixel, centerPixel) || 100) - 6;
+
+        // 先直接放到中点上 this.radius/2:圆中心; +2: 线宽
+        return (computePointDistance(mitPointPixel, centerPixel)) - (this.radius / 2 + 2);
     }
 
     updateRotationAbleOffset = () => {

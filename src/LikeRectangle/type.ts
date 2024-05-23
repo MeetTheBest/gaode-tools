@@ -1,4 +1,5 @@
 import type LikeRectangle from './index';
+import type RotationOptions from '../Rotatable/type';
 
 // 创建矩形方式
 // - 两点创建一个矩形：东北点 和 西南点
@@ -10,6 +11,7 @@ export interface ILikeRectangleOptions extends AMap.PolygonOptions {
     width?: number;
     height?: number;
     rotatable?: boolean;
+    rotationOptions?: RotationOptions
 }
 
 export interface ILikeRectangle extends ILikeRectangleOptions, Partial<AMap.PolygonOptions> {
