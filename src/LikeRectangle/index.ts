@@ -64,7 +64,7 @@ class LikeRectangle extends Event implements ILikeRectangle {
 
     likeRectangleSetOptions(optsArg: AMap.PolygonOptions & ILikeRectangleOptions): void {
         const { rotatable } = { ...this.opts, ...(optsArg || {}) };
-        this.likeRectangle.setOptions.bind(this.likeRectangle, optsArg);
+        this.likeRectangleRawSetOptions(optsArg);
 
         // 注册旋转
         if (rotatable) {

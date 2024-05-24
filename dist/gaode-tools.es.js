@@ -11807,7 +11807,7 @@ class u1 extends ra {
   likeRectangleSetOptions(e) {
     var i, a;
     const { rotatable: n } = zt(zt({}, this.opts), e || {});
-    this.likeRectangle.setOptions.bind(this.likeRectangle, e), n ? (this.opts.rotatable = !0, this.registerRotatable()) : (this.opts.rotatable = !1, (a = (i = this.rotatableIns) == null ? void 0 : i.close) == null || a.call(i), this.rotatableIns = null);
+    this.likeRectangleRawSetOptions(e), n ? (this.opts.rotatable = !0, this.registerRotatable()) : (this.opts.rotatable = !1, (a = (i = this.rotatableIns) == null ? void 0 : i.close) == null || a.call(i), this.rotatableIns = null);
   }
   destroy() {
     var e, n;
