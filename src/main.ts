@@ -24,3 +24,5 @@ export {
   LikeRectangle,
   LikeRectangleEditor,
 };
+
+export type { ILikeRectangleOptions } from './LikeRectangle/type';

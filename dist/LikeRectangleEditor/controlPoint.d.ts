@@ -1,11 +1,12 @@
-import LikeRectangleEditor from ".";
+import { default as LikeRectangleEditor } from '.';
+
 declare class ControlPoint {
     point: AMap.CircleMarker;
     points: AMap.CircleMarker[];
     center: AMap.LngLat;
-    context: LikeRectangleEditor;
+    editor: LikeRectangleEditor;
     isEnabled: boolean;
-    constructor(context: LikeRectangleEditor, point: AMap.CircleMarker, points: AMap.CircleMarker[]);
+    constructor(editor: LikeRectangleEditor, point: AMap.CircleMarker, points: AMap.CircleMarker[]);
     get len(): number;
     get extData(): any;
     get idx(): any;
@@ -405,8 +406,6 @@ declare class ControlPoint {
         emit(type: AMap.EventType, data?: any): any;
         getEvents(): Record<string, any[]>;
     };
-    get xAxisMax(): number;
-    get yAxisMax(): number;
     enable(): void;
     disable(): void;
     setCursorPointer(cursor: string): void;

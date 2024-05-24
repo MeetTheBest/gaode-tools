@@ -1,4 +1,5 @@
-import LikeRectangleEditor from ".";
+import { default as LikeRectangleEditor } from '.';
+
 export interface IEnhanceProperty {
     likeRectangleEditor: LikeRectangleEditor;
     polygonEditorOpen: () => void;
@@ -15,4 +16,8 @@ export interface IEnhanceEditorOptions {
      * !!!注意 editingCloseRotator 设置为 false 则需要自行控制旋转器状态，否则编辑时，旋转操作点不会跟随变化
      */
     editingCloseRotator?: boolean;
+    /**
+     * 是否为移动端
+     */
+    isMobile?: boolean;
 }

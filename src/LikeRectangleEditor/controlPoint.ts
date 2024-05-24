@@ -7,11 +7,11 @@ class ControlPoint {
     point!: AMap.CircleMarker;
     points!: AMap.CircleMarker[];
     center!: AMap.LngLat;
-    context!: LikeRectangleEditor;
+    editor!: LikeRectangleEditor;
     isEnabled: boolean = false;
 
-    constructor(context: LikeRectangleEditor, point: AMap.CircleMarker, points: AMap.CircleMarker[]) {
-        this.context = context;
+    constructor(editor: LikeRectangleEditor, point: AMap.CircleMarker, points: AMap.CircleMarker[]) {
+        this.editor = editor;
         this.point = point;
         this.points = points;
 
@@ -32,7 +32,7 @@ class ControlPoint {
     }
 
     get map() {
-        return this.context.map;
+        return this.editor.map;
     }
 
     enable() {
@@ -72,8 +72,13 @@ class ControlPoint {
     }
 
     defaultRegistryEvent() {
-        this.point.on('mouseover', this.onMouseOver);
-        this.point.on('mouseout', this.onMouseOut);
+        const isMobile = this.editor.isMobile;
+
+        let mouseover = isMobile ? 'touchstart' : 'mouseover' as AMap.EventType;
+        let mouseout = isMobile ? 'touchend' : 'mouseout' as AMap.EventType;
+
+        this.point.on(mouseover, this.onMouseOver);
+        this.point.on(mouseout, this.onMouseOut);
     }
 
     registryEvent() {
@@ -96,12 +101,20 @@ class ControlPoint {
 
     onMouseOut() {
         console.log(`点位${this.extData.idx} 移出`);
-        this.disable();
+        // 移动端时，延迟处理
+        if (this.editor.isMobile) {
+            const timer = setTimeout(() => {
+                clearTimeout(timer)
+                this.disable();
+            }, 4);
+        } else {
+            this.disable();
+        }
     }
 
     onDragStart(data) {
         console.log(`点位${this.extData.idx} 移动开始`);
-        this.context.onDragStart(data);
+        this.editor.onDragStart(data);
     }
 
     onDragging(data: IObject) {
@@ -114,7 +127,7 @@ class ControlPoint {
         // 更新下一个右节点的位置
         this.updateNextRightPoint(pixel, data);
 
-        this.context.onDragging(data);
+        this.editor.onDragging(data);
     }
 
     onDragEnd(data: IObject) {
@@ -128,7 +141,7 @@ class ControlPoint {
 
         // 更新中心点
         this.center = target.getCenter();
-        this.context.onDragEnd(data);
+        this.editor.onDragEnd(data);
     }
 
     /**
@@ -150,6 +163,9 @@ class ControlPoint {
         // this.leftPointMarker = new AMap.Marker({ position: leftNextPoint.getCenter() });
 
         // y1 = k1 * x1 + b1 （ps: 两条直线互相垂直，则有 k1 * k2 = -1）
+        // console.log('leftPointPixel ===>', { x: leftPointPixel.x, y: leftPointPixel.y });
+        // console.log('leftNextPointPixel ===>', { x: leftNextPointPixel.x, y: leftNextPointPixel.y });
+
         let k1 = (leftNextPointPixel.y - leftPointPixel.y) / (leftNextPointPixel.x - leftPointPixel.x);
         // 如果 k1 小于 K_DOWN_LIMIT_COUNT
         // 这里为啥要把精度控制到 K_DOWN_LIMIT_COUNT ，因为在页面中可操作得到的最小 k 值 = 1 / 屏幕宽度，0.00000001 只是兜底更小的值
@@ -164,12 +180,17 @@ class ControlPoint {
         // console.log('updateNextLeftPoint.k2 ===>', k2);
         // console.log('updateNextLeftPoint.b2 ===>', b2);
 
-        const isLimit = !isFinite(k1)
+        const isLimit =
+            Number.isNaN(k1)
+            || !isFinite(k1)
             || isLimitMaxInteger(k1)
+            || Number.isNaN(k2)
             || !isFinite(k2)
             || isLimitMaxInteger(k2)
+            || Number.isNaN(b1)
             || !isFinite(b1)
             || isLimitMaxInteger(b1)
+            || Number.isNaN(b2)
             || !isFinite(b2)
             || isLimitMaxInteger(b2);
         // 设交点坐标为：x,y
@@ -197,6 +218,7 @@ class ControlPoint {
         }
         // console.log('updateNextLeftPoint.x ===>', x);
         // console.log('updateNextLeftPoint.y ===>', y);
+        // console.log('                      ');
 
         const nextLeftPointPixel = new AMap.Pixel(x, y);
         // const nextLeftPoint = this.map.containerToLngLat(nextLeftPointPixel);
@@ -238,12 +260,17 @@ class ControlPoint {
         // console.log('updateNextRightPoint.k2 ===>', k2);
         // console.log('updateNextRightPoint.b2 ===>', b2);
 
-        const isLimit = !isFinite(k1)
+        const isLimit =
+            Number.isNaN(k1)
+            || !isFinite(k1)
             || isLimitMaxInteger(k1)
+            || Number.isNaN(k2)
             || !isFinite(k2)
             || isLimitMaxInteger(k2)
+            || Number.isNaN(b1)
             || !isFinite(b1)
             || isLimitMaxInteger(b1)
+            || Number.isNaN(b2)
             || !isFinite(b2)
             || isLimitMaxInteger(b2);
 

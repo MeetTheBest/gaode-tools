@@ -1,4 +1,5 @@
 import { IPolygonEditorPatch } from './type';
+
 export default class PolygonEditorRanging {
     private map;
     private circleMarkers;

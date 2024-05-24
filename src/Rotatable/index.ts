@@ -1,14 +1,19 @@
 import { isFinite } from 'lodash-es'
 import Moveable, { makeAble } from 'moveable';
+
 import LikeRectangle from '../LikeRectangle';
 import Event from '../Event';
 import { uuid } from '../utils';
 import { computePointDistance } from '../utils/calc';
 import { isLimitMaxInteger } from '../utils/index';
 import { K_DOWN_LIMIT_COUNT } from '../constants/common';
+import type RotationOptions from './type';
+
+const DEFAULT_RADIUS = 10;
 
 class Rotatable extends Event {
     likeRectangleIns!: LikeRectangle & AMap.Polygon;
+    opts: RotationOptions;
     moveableIns: Moveable | null = null;
     rotationPointIns: AMap.Marker | null = null;
     midPoint!: AMap.LngLat;
@@ -19,23 +24,27 @@ class Rotatable extends Event {
     moveableElementId = `ID${uuid()}`;
     targetElementId = `ID${uuid()}`;
 
-    constructor(likeRectangle: LikeRectangle & AMap.Polygon) {
+    constructor(likeRectangle: LikeRectangle & AMap.Polygon, opts: RotationOptions = {}) {
         super();
         if (!likeRectangle) {
             throw new Error('likeRectangleIns is required');
         }
 
         this.likeRectangleIns = likeRectangle;
+        this.opts = opts;
         this.open();
     }
 
     get mapIns() {
-        // @ts-ignore
-        return this.likeRectangleIns._map;
+        return this.likeRectangleIns.likeRectangle.map;
     }
 
     get center() {
         return this.likeRectangleIns.likeRectangle.center!;
+    }
+
+    get rotatable() {
+        return this.likeRectangleIns?.likeRectangle?.opts?.rotatable;
     }
 
     get draggable() {
@@ -43,7 +52,13 @@ class Rotatable extends Event {
         return options.draggable;
     }
 
+    get radius() {
+        const { controllerPointRadius = DEFAULT_RADIUS } = this.opts;
+        return Math.max(+`${controllerPointRadius}`.replace('px', '') || DEFAULT_RADIUS, DEFAULT_RADIUS);
+    }
+
     open() {
+        if (!this.rotatable) return;
         this.calcMidPoint();
         this.calcInitAngle();
         this.setRotationLine();
@@ -97,7 +112,7 @@ class Rotatable extends Event {
     }
 
     genMarkerContent = (rotate = 0) => {
-        const w = 0.1;
+        const w = 0.05;
         const boxStyle = `width:${w}px; height:${w}px;`;
         rotate = Number.isNaN(+rotate) ? 0 : +rotate;
 
@@ -108,11 +123,11 @@ class Rotatable extends Event {
             style="${boxStyle}"
             data-rotatable-ref="${this.moveableElementId}"
             >
-            <div
-                data-rotatable-ref="${this.targetElementId}"
-                style="${boxStyle} transform: translate(0,0) rotate(${rotate}deg);">
-                ${dynamicDOM}
-            </div>
+                <div
+                    data-rotatable-ref="${this.targetElementId}"
+                    style="${boxStyle} transform: translate(0,0) rotate(${rotate}deg);">
+                    ${dynamicDOM}
+                </div>
             </div>
         `;
         return markerContent;
@@ -139,8 +154,8 @@ class Rotatable extends Event {
                                 `translate(-50%, -100%)` +
                                 ` translate(${(pos1[0] + pos2[0]) / 2}px, ${(pos1[1] + pos2[1]) / 2}px)` +
                                 ` rotate(${rect.rotation}deg) translateY(-${self.offset}px)`,
-                            width: '10px',
-                            height: '10px',
+                            width: `${self.radius}px`,
+                            height: `${self.radius}px`,
                             cursor: 'move',
                             background: '#fff',
                             border: '2px solid #cc6666',
@@ -238,18 +253,10 @@ class Rotatable extends Event {
             [nextRightTopPoint.lng, nextRightTopPoint.lat],
             [nextRightBottomPoint.lng, nextRightBottomPoint.lat],
             [nextLeftBottomPoint.lng, nextLeftBottomPoint.lat],
-        ];
+        ] as AMap.LngLatLike[];
 
         // 更新点位
-        // @ts-ignore
         this.likeRectangleIns.setPath(nextPath);
-
-        // likeRectangleIns.likeRectangleIns.updatePoints(
-        // 	[nextLeftTopPoint.lng, nextLeftTopPoint.lat],
-        // 	[nextRightTopPoint.lng, nextRightTopPoint.lat],
-        // 	[nextRightBottomPoint.lng, nextRightBottomPoint.lat],
-        // 	[nextLeftBottomPoint.lng, nextLeftBottomPoint.lat],
-        // );
     };
 
     calcRotatePoint = (point: AMap.Pixel, center: AMap.Pixel, angle: number) => {
@@ -257,12 +264,12 @@ class Rotatable extends Event {
         const y1 = point.y;
         const x2 = center.x;
         const y2 = center.y;
-        const angleRad = (angle * Math.PI) / 180;
+        const angleRadian = (angle * Math.PI) / 180;
 
         const dx = x1 - x2;
         const dy = y1 - y2;
-        const newX = dx * Math.cos(angleRad) - dy * Math.sin(angleRad) + x2;
-        const newY = dx * Math.sin(angleRad) + dy * Math.cos(angleRad) + y2;
+        const newX = dx * Math.cos(angleRadian) - dy * Math.sin(angleRadian) + x2;
+        const newY = dx * Math.sin(angleRadian) + dy * Math.cos(angleRadian) + y2;
 
         return { x: newX, y: newY };
     }
@@ -276,7 +283,7 @@ class Rotatable extends Event {
     };
 
     calcMidPoint() {
-        const path = this.likeRectangleIns?.getPath?.()?.map((lngLat: any) => [lngLat.lng, lngLat.lat])! as unknown as number[];
+        const path = this.likeRectangleIns?.getPath?.()?.map((lngLat: any) => [lngLat.lng, lngLat.lat])! as number[][];
         if (!path.length || !this.mapIns) {
             throw new Error('likeRectangle or map is undefined');
         }
@@ -368,10 +375,9 @@ class Rotatable extends Event {
         const mitPointPixel = this.mapIns.lngLatToContainer(this.midPoint);
         const centerPixel = this.mapIns.lngLatToContainer(this.center);
 
-        // 默认多 50px 长度
-        // return (computePointDistance(mitPointPixel, centerPixel) || 100) + 50;
-        // 先直接放到中点上
-        return (computePointDistance(mitPointPixel, centerPixel) || 100) - 6;
+
+        // 先直接放到中点上 this.radius/2:圆中心; +2: 线宽
+        return (computePointDistance(mitPointPixel, centerPixel)) - (this.radius / 2 + 2);
     }
 
     updateRotationAbleOffset = () => {

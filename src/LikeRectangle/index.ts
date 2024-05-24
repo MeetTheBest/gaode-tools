@@ -5,7 +5,7 @@ import { formatNumber } from '../utils';
 
 class LikeRectangle extends Event implements ILikeRectangle {
     opts!: ILikeRectangleOptions;
-    map!: ILikeRectangleOptions['map'];
+    map!: AMap.Map;
     width!: number;
     height!: number;
     center!: AMap.Vector2;
@@ -14,12 +14,15 @@ class LikeRectangle extends Event implements ILikeRectangle {
     leftBottom!: AMap.Vector2; // 左下点
     rightBottom!: AMap.Vector2; // 右下点
     likeRectangle!: AMap.Polygon & IEnhanceProperty;
-    rotatableIns!: Rotatable;
+    rotatableIns!: Rotatable | null;
     likeRectangleDestroy!: () => void;
     likeRectangleRawSetOptions!: (optsArg: AMap.PolygonOptions) => void;
 
     constructor(opts: ILikeRectangleOptions) {
         super();
+
+        this.validatorOpts(opts);
+
         this.bindOptsToSelf(opts);
 
         if (!opts.path) {
@@ -34,6 +37,12 @@ class LikeRectangle extends Event implements ILikeRectangle {
 
         // @ts-ignore
         return ins;
+    }
+
+    validatorOpts(opts: ILikeRectangleOptions) {
+        if (!('map' in opts) || !opts.map) {
+            throw new Error('not found map instance');
+        }
     }
 
     bindOptsToSelf(opts: ILikeRectangleOptions) {
@@ -54,8 +63,8 @@ class LikeRectangle extends Event implements ILikeRectangle {
     }
 
     likeRectangleSetOptions(optsArg: AMap.PolygonOptions & ILikeRectangleOptions): void {
-        const { rotatable } = optsArg;
-        this.likeRectangle.setOptions.bind(this.likeRectangle, optsArg);
+        const { rotatable } = { ...this.opts, ...(optsArg || {}) };
+        this.likeRectangleRawSetOptions(optsArg);
 
         // 注册旋转
         if (rotatable) {
@@ -65,6 +74,7 @@ class LikeRectangle extends Event implements ILikeRectangle {
             // 销毁旋转
             this.opts.rotatable = false;
             this.rotatableIns?.close?.();
+            this.rotatableIns = null;
         }
     }
 
@@ -74,9 +84,10 @@ class LikeRectangle extends Event implements ILikeRectangle {
     }
 
     registerRotatable() {
-        if (!this.opts.rotatable) return;
+        const { rotatable, rotationOptions } = this.opts;
+        if (!rotatable || this.rotatableIns) return;
 
-        this.rotatableIns = new Rotatable(this.likeRectangle as unknown as LikeRectangle & AMap.Polygon);
+        this.rotatableIns = new Rotatable(this.likeRectangle as unknown as LikeRectangle & AMap.Polygon, rotationOptions);
         const target = this.likeRectangle;
         this.rotatableIns.on('rotateStart', (event) => target.emit('rotateStart', event));
         this.rotatableIns.on('rotate', (event) => target.emit('rotate', event));
@@ -108,7 +119,7 @@ class LikeRectangle extends Event implements ILikeRectangle {
     }
 
     setCenter(center: AMap.Vector2) {
-        this.likeRectangle.likeRectangleCenter = this.center = center;
+        this.center = center;
     }
 
     setPoints() {
@@ -145,7 +156,6 @@ class LikeRectangle extends Event implements ILikeRectangle {
         this.likeRectangle.rightTop = this.rightTop;
         this.likeRectangle.rightBottom = this.rightBottom;
         this.likeRectangle.leftBottom = this.leftBottom;
-        this.likeRectangle.likeRectangleCenter = this.center;
         this.likeRectangle.rotatable = this.opts.rotatable;
     }
 

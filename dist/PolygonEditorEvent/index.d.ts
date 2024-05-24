@@ -1,5 +1,6 @@
-import Event from '../Event';
 import { IPolygonEditorPatch } from './type';
+import { default as Event } from '../Event';
+
 export default class PolygonEditorEvent extends Event {
     private map;
     private circleMarkers;

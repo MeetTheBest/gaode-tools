@@ -34,6 +34,9 @@ export default class Event {
 
     off(eventName: string, callback: TEventCallback) {
         if (!eventName || typeof eventName !== 'string') return;
+        if (!callback) {
+            return this.clearEvents(eventName);
+        }
         this.events[eventName] = this.getEvents(eventName).filter(cb => cb !== callback);
     }
 

@@ -1,4 +1,5 @@
 import { IEvents, TEventCallback } from './type';
+
 export default class Event {
     private events;
     getEvents(eventName: string): TEventCallback[];

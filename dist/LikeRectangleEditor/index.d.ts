@@ -1,7 +1,8 @@
-import { PolygonEditorOptions } from '@amap/amap-jsapi-types/plugins/PolygonEditor';
-import LikeRectangle from "../LikeRectangle";
-import ControlPoint from './controlPoint';
 import { IEnhanceProperty, IEnhanceEditorOptions } from './type';
+import { default as ControlPoint } from './controlPoint';
+import { default as LikeRectangle } from '../LikeRectangle';
+import { PolygonEditorOptions } from '@amap/amap-jsapi-types/plugins/PolygonEditor';
+
 declare class LikeRectangleEditor {
     opts: PolygonEditorOptions & IEnhanceEditorOptions;
     map: AMap.Map;
@@ -12,11 +13,12 @@ declare class LikeRectangleEditor {
     controlPoints: ControlPoint[];
     inEditing: boolean;
     isRestart: boolean;
-    constructor(map: AMap.Map, likeRectangle: LikeRectangle, opts: PolygonEditorOptions & IEnhanceEditorOptions);
+    constructor(map: AMap.Map, likeRectangle: LikeRectangle, opts?: PolygonEditorOptions & IEnhanceEditorOptions);
     get options(): PolygonEditorOptions;
-    get rotatable(): any;
+    get rotatable(): boolean | undefined;
     get rotatingCloseEditor(): boolean | undefined;
     get rotatableIns(): any;
+    get isMobile(): boolean | undefined;
     /**
      * 重新 polygonEditor.open 方法
      */

@@ -1,6 +1,12 @@
 export declare const uuid: () => string;
 export declare const formatNumber: (num: number, precision?: number) => number;
 /**
+ * 是否大于最大安全数
+ * @param n
+ * @returns
+ */
+export declare const isLimitMaxInteger: (n: number) => boolean;
+/**
  * 创建文本
  * @param text
  * @param style 自定义文本样式

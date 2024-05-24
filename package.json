@@ -1,57 +1,57 @@
 {
-  "name": "gaode-tools",
-  "version": "0.0.7-beta5",
-  "type": "module",
-  "author": "fengjian",
-  "description": "高德工具 多边型编辑器测距工具等",
-  "keywords": [
-    "gaode",
-    "polygon",
-    "polygonEditor",
-    "ranging",
-    "高德工具",
-    "多边形测距",
-    "多边形编辑器测距"
-  ],
-  "files": [
-    "dist/"
-  ],
-  "main": "./dist/gaode-tools.umd.js",
-  "module": "./dist/gaode-tools.es.js",
-  "exports": {
-    ".": {
-      "import": "./dist/gaode-tools.es.js",
-      "require": "./dist/gaode-tools.umd.js"
-    }
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "rimraf -rf ./dist && tsc && vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "@amap/amap-jsapi-loader": "^1.0.1",
-    "@amap/amap-jsapi-types": "^0.0.13",
-    "@types/lodash-es": "^4.17.8",
-    "@vitejs/plugin-vue": "^4.2.3",
-    "rimraf": "^5.0.1",
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5",
-    "vite-plugin-dts": "^3.3.1"
-  },
-  "dependencies": {
-    "@types/node": "^20.8.3",
-    "lodash-es": "^4.17.21",
-    "moveable": "^0.51.2",
-    "vue": "^3.3.4"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
-  "homepage": "https://github.com/MeetTheBest/gaode-tools",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/MeetTheBest/gaode-tools.git"
-  },
-  "license": "MIT"
+    "name": "gaode-tools",
+    "version": "0.0.7-beta8",
+    "type": "module",
+    "author": "fengjian",
+    "description": "高德工具 多边型编辑器测距工具等",
+    "keywords": [
+        "gaode",
+        "polygon",
+        "polygonEditor",
+        "ranging",
+        "高德工具",
+        "多边形测距",
+        "多边形编辑器测距"
+    ],
+    "files": [
+        "dist/"
+    ],
+    "main": "./dist/gaode-tools.umd.js",
+    "module": "./dist/gaode-tools.es.js",
+    "exports": {
+        ".": {
+            "import": "./dist/gaode-tools.es.js",
+            "require": "./dist/gaode-tools.umd.js"
+        }
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "rimraf -rf ./dist && tsc && vite build",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "@amap/amap-jsapi-loader": "^1.0.1",
+        "@amap/amap-jsapi-types": "^0.0.13",
+        "@types/lodash-es": "^4.17.8",
+        "@vitejs/plugin-vue": "^4.2.3",
+        "rimraf": "^5.0.1",
+        "typescript": "^5.0.2",
+        "vite": "^4.4.5",
+        "vite-plugin-dts": "^3.3.1"
+    },
+    "dependencies": {
+        "@types/node": "^20.8.3",
+        "lodash-es": "^4.17.21",
+        "moveable": "^0.51.2",
+        "vue": "^3.3.4"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
+    },
+    "homepage": "https://github.com/MeetTheBest/gaode-tools",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MeetTheBest/gaode-tools.git"
+    },
+    "license": "MIT"
 }

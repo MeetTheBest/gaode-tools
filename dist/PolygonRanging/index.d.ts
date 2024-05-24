@@ -1,4 +1,5 @@
 import { IOptions } from './type';
+
 export default class PolygonRanging {
     opts: IOptions | undefined;
     private map;
